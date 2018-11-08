@@ -3,6 +3,7 @@ import SpotifyApi from 'spotify-web-api-js';
 import TracksShort from './TracksShort';
 import TracksMedium from './TracksMedium';
 import TracksLong from './TracksLong';
+import './../../style/TopTracks.css';
 const spotifyApi = new SpotifyApi();
 
 class TopTracks extends Component {

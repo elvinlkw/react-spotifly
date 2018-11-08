@@ -1,0 +1,41 @@
+.container{
+    width:100%;
+    padding:0!important;
+    margin:0!important;
+    max-width: 100%!important;
+}
+
+.container img{
+    display: block;
+    margin: 0 auto;
+}
+
+.wrapper-top-header h1{
+    padding-bottom: 2rem;
+    font-size: 3rem;
+}
+
+.container audio{
+    width: 100%;
+    display:block;
+    margin: 0 auto;
+}
+
+.container-current-top{
+    padding-top: 2rem;
+    padding-bottom: 5rem;
+    display:flex;
+    justify-content: center;
+}
+
+.wrapper-top-preview{
+    width: 30rem;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapper-top-preview h4{
+    
+}
