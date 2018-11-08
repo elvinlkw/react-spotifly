@@ -1,7 +1,7 @@
 {
   "name": "react-spotifly",
   "version": "0.1.0",
-  "homepage": "http://gitname.github.io/react-spotifly",
+  "homepage": "https://elvinlkw.github.io/react-spotifly",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.1.3",
