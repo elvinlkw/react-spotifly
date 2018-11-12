@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
 class GetTopTracks extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             topTrack: '',
             topTrackArtwork: '',
             topArtistPreview: '',
-            topTrackLoaded:false
+            topTrackLoaded:false,
         }
     }
     componentWillMount(){
@@ -31,7 +31,7 @@ class GetTopTracks extends Component {
             alert('Data Could Not Be Retrieved!');
         });
     }
-    render() { 
+    render() {
         return (
             <div>
                 <div className="container-current-top">
@@ -42,9 +42,8 @@ class GetTopTracks extends Component {
                     <div className="wrapper-top-preview">
                         <h4>{this.state.topTrack}</h4>
                         {this.state.topTrackLoaded && this.state.topTrackPreview &&
-                        <audio controls id="play" src={this.state.topTrackPreview}></audio>}
-                        {!this.state.topTrackPreview && 
-                        <p>No Preview Available</p>}
+                        <audio controls id="audio" src={this.state.topTrackPreview}></audio>}
+                        {!this.state.topTrackPreview && <p>No Preview Available</p>}
                     </div>
                 </div>
             </div>

@@ -25,8 +25,8 @@ class GetTopArtist extends Component {
                     topPreviewLoaded: true,
                     topArtistTrack: data.tracks[0].name,
                     topArtistPreview: data.tracks[0].preview_url,
-                })
-            })
+                });
+            });
         });
     }
     render() { 
@@ -37,8 +37,7 @@ class GetTopArtist extends Component {
                     <h6>{`${this.state.topArtist} - ${this.state.topArtistTrack}`}</h6>
                     {this.state.topPreviewLoaded && this.state.topArtistPreview && 
                     <audio controls src={this.state.topArtistPreview}></audio>}
-                    {!this.state.topArtistPreview && 
-                    <p>No Preview Available</p>}
+                    {!this.state.topArtistPreview && <p>No Preview Available</p>}
                 </div>
                 <div className="wrapper-top-header">
                     <h1>All Time Top Artist</h1>
