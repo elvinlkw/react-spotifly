@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Switch, Route} from 'react-router-dom';
-import Homepage from './Homepage';
+import Homepage from './Homepage/Homepage';
 import TopTracks from './TopTracks/TopTracks';
 import TopArtists from './TopArtists/TopArtists';
 

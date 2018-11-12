@@ -3,6 +3,7 @@ import SpotifyApi from 'spotify-web-api-js';
 import ArtistsShort from './ArtistsShort';
 import ArtistsMedium from './ArtistsMedium';
 import ArtistsLong from './ArtistsLong';
+import './../../style/TopArtists.css';
 const spotifyApi = new SpotifyApi();
 
 class TopArtists extends Component {
@@ -14,7 +15,7 @@ class TopArtists extends Component {
     }
     render() { 
         return (
-            <div>
+            <div className="top-artists-container">
                 <h1 className="text-center">Top Artists</h1>
                 <div className="row" style={{width: '100vw', overflowX: 'hidden'}}>
                     <ArtistsShort spotifyApi={spotifyApi}/>

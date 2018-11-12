@@ -1,14 +1,21 @@
 .container-login{
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 5rem;
+    padding: 4rem 0 0 20%;
+    background: #eee;
+    min-height: 100vh;
+}
+
+#react-app{
+    padding-bottom: 1rem;
 }
 
 .container-login a{
     font-size: 3rem;
 }
 
-.container-login p{
-    font-size: 2rem;
+button{
+    width: 10rem;
+}
+
+button span{
+    color:#000;
 }

@@ -23,7 +23,7 @@ class TracksShort extends Component {
                     }
                 }
 				obj['key'] = i+1;
-				obj['value'] = artist + ' - ' + res.items[i].name;
+                obj['value'] = artist + ' - ' + res.items[i].name;
 				tempArray.push(obj);
             }
             return;

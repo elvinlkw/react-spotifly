@@ -3,6 +3,11 @@
     padding:0!important;
     margin:0!important;
     max-width: 100%!important;
+    background: lightblue;
+}
+
+.fa{
+    cursor: pointer;
 }
 
 .container img{
@@ -34,4 +39,28 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.container-favorite-genres{
+    padding-bottom: 4rem;
+    width:100%;
+}
+
+.progress{
+    width: 25%;
+    margin-top: 0.5rem;
+}
+
+.genres{
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+}
+
+
+.fontawesome{
+    width: 100px;
+    height:100px;
+    display:block;
 }

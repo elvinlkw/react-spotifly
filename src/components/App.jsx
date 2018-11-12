@@ -24,16 +24,16 @@ class App extends Component {
     }
     render() { 
         return (
-            <React.Fragment>
+            <div>
                 {!this.state.loggedIn && 
                 <Login/>}
 
                 {this.state.loggedIn &&
-                <React.Fragment>
+                <div>
                     <Navbar token={this.authToken}/>
-                    <Main/>
-                </React.Fragment>}
-            </React.Fragment>
+                    <Main token={this.authToken}/>
+                </div>}
+            </div>
         );
     }
 }
