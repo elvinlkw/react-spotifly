@@ -115,9 +115,22 @@ class Homepage extends Component {
             for(var i = 0, len = audios.length; i < len;i++){
                 if(audios[i] !== e.target){
                     audios[i].pause();
+                    document.getElementsByTagName('i')[i].className = 'fa fa-play fa-2x';
                 }
             }
         }, true);
+        var renderPlayPause = (player) => {
+            var classlist = document.getElementsByTagName('i')[player].className;
+            var audio = document.getElementsByTagName('audio');
+            if(classlist.includes('play')){
+                classlist = classlist.replace('play', 'pause');
+                audio[player].play();
+            }else{
+                classlist = classlist.replace('pause', 'play');
+                audio[player].pause();
+            }
+            document.getElementsByTagName('i')[player].className = classlist;
+        }
         return (
             <div className="container">
                 <div className="container-current-top">
@@ -128,8 +141,9 @@ class Homepage extends Component {
                     <div className="wrapper-top-preview">
                         <h4>{this.state.topTrack}</h4>
                         {this.state.topTrackLoaded && this.state.topTrackPreview &&
-                        <audio controls src={this.state.topTrackPreview}></audio>}
+                        <audio src={this.state.topTrackPreview}></audio>}
                         {!this.state.topTrackPreview && <p>No Preview Available</p>}
+                        <i onClick={()=>renderPlayPause(0)} className="fa fa-play fa-2x"></i>
                     </div>
                 </div>
                 <div className="container-current-top">
@@ -137,8 +151,9 @@ class Homepage extends Component {
                         <h4>{this.state.topArtist}</h4>
                         <h6>{`${this.state.topArtist} - ${this.state.topArtistTrack}`}</h6>
                         {this.state.topPreviewLoaded && this.state.topArtistPreview && 
-                        <audio controls src={this.state.topArtistPreview}></audio>}
+                        <audio src={this.state.topArtistPreview}></audio>}
                         {!this.state.topArtistPreview && <p>No Preview Available</p>}
+                        <i onClick={()=>renderPlayPause(1)} className="fa fa-play fa-2x"></i>
                     </div>
                     <div className="wrapper-top-header">
                         <h1>All Time Top Artist</h1>
