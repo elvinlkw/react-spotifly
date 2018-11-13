@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {NavLink} from 'react-router-dom';
+import './../style/Navbar.css';
 
 class Navbar extends Component {
     render() { 
@@ -12,6 +13,9 @@ class Navbar extends Component {
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item">
                         <NavLink exact to={`/#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Home</NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink exact to={`/profile#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">My Profile</NavLink>
                     </li>
                     <li className="nav-item">
                         <NavLink exact to={`/top-tracks#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Top Tracks</NavLink>
