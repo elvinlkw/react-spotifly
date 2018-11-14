@@ -25,8 +25,12 @@ class Homepage extends Component {
         spotifyApi.setAccessToken(token);
     }
     componentWillMount(){
-        spotifyApi.getMyTopTracks({time_range: 'long_term'}).then((res)=>{
+        spotifyApi.getMyTopTracks({time_range: 'long_term', limit: 50}).then((res)=>{
             var artist = '';
+            var id = [];
+            for (var i = 0; i<res.items.length; i++){
+                id.push(res.items[i].id);
+            }
             for (var j=0; j<res.items[0].artists.length;j++){
                 if(artist.length > 1){
                     artist += ', ' + res.items[0].artists[j].name;
@@ -40,8 +44,28 @@ class Homepage extends Component {
                 topTrackPreview: res.items[0].preview_url,
                 topTrackLoaded:true,
             });
+            return id;
         }, (res)=> {
             alert('Data Could Not Be Retrieved!');
+        }).then((id)=>{
+            spotifyApi.getAudioFeaturesForTracks(id).then((data)=>{
+                console.log(data.audio_features)
+                var energy=0, danceability=0, valence=0, bpm=0;
+                var dataArray = data.audio_features;
+                var final = [];
+                for(var i = 0; i < dataArray.length; i++){
+                    bpm += dataArray[i].tempo;
+                    energy += dataArray[i].energy;
+                    danceability += dataArray[i].danceability;
+                    valence += dataArray[i].valence;
+                }
+                bpm = bpm/dataArray.length;
+                energy = energy/dataArray.length;
+                danceability = danceability/dataArray.length;
+                valence = valence/dataArray.length;
+                final.push(bpm, energy, danceability, valence);
+                console.log(final)
+            })
         });
 
         spotifyApi.getMyTopArtists({time_range: 'long_term', limit: '1'}).then((res)=>{
@@ -110,7 +134,8 @@ class Homepage extends Component {
             var audio = document.getElementsByTagName('audio');
             if(classlist.includes('play')){
                 classlist = classlist.replace('play', 'pause');
-                audio[player].play();
+                audio[player].play()
+                audio[player].volume = 0.5;
             }else{
                 classlist = classlist.replace('pause', 'play');
                 audio[player].pause();
