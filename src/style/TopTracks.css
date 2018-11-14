@@ -4,4 +4,5 @@ body{
 
 .top-track-container{
     background: #eee;
+    min-height: calc(100vh - 4rem);
 }

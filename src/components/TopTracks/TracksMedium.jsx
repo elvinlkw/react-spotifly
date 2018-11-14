@@ -22,8 +22,9 @@ class TracksMedium extends Component {
                         artist += res.items[i].artists[j].name;
                     }
                 }
-				obj['key'] = i+1;
-				obj['value'] = artist + ' - ' + res.items[i].name;
+				obj['key'] = i+99;
+                obj['value'] = artist + ' - ' + res.items[i].name;
+                obj['preview'] = res.items[i].preview_url;
 				tempArray.push(obj);
             }
             return;
@@ -41,25 +42,51 @@ class TracksMedium extends Component {
                             artist += data.items[i].artists[j].name;
                         }
                     }
-                    obj['key'] = i+50;
+                    obj['key'] = i+148;
                     obj['value'] = artist + ' - ' + data.items[i].name;
+                    obj['preview'] = data.items[i].preview_url;
                     tempArray.push(obj);
                 }
                 this.setState({
                     itemList: tempArray,
                     dataValid: true
                 });
-            })
+            });
         });
     }
     render() { 
+        document.addEventListener('play', function(e){
+            var audios = document.getElementsByTagName('audio');
+            for(var i = 0, len = audios.length; i < len;i++){
+                if(audios[i] !== e.target){
+                    audios[i].pause();
+                    document.getElementsByTagName('i')[i].className = 'fa fa-play';
+                }
+            }
+        }, true);
+        var renderPlayPause = (player)=>{
+            var classlist = document.getElementsByTagName('i')[player].className;
+            var audio = document.getElementsByTagName('audio');
+            if(classlist.includes('play')){
+                classlist = classlist.replace('play', 'pause');
+                audio[player].play();
+            }else{
+                classlist = classlist.replace('pause', 'play');
+                audio[player].pause();
+            }
+            document.getElementsByTagName('i')[player].className = classlist;
+        }
         return (
             <div className="col-4">
                 <p style={{fontWeight: 'bold'}}>Medium Term (Approximately 6 Months)</p>
                 <ol>
                     {this.state.dataValid && this.state.itemList.map((item) => {
                         return (
-                            <li key={item.key}>{item.value}</li>
+                            <li key={item.key}>
+                                <i onClick={()=>renderPlayPause(item.key)} style={{opacity:'0.8'}} className="fa fa-play"></i>
+                                {` ${item.value}`}
+                                <audio src={item.preview}></audio>
+                            </li>
                         )
                     })}
                 </ol>

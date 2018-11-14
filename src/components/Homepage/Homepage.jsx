@@ -80,33 +80,19 @@ class Homepage extends Component {
             })
         });
     }
-    sortResult(data){
-        var first = 0, second = 0, third = 0, fourth = 0, temp;
-        var result = {};
+    sortResult(object){
+        var result = {}
+        var sortedArray = []
+        for (var key in object){
+            sortedArray.push([key, object[key]]);
+        }
+        sortedArray.sort(function(a, b) {
+            return b[1] - a[1];
+        });
+        for (var i=0; i <= 5; i++){
+            result[sortedArray[i][0]] = Math.ceil((sortedArray[i][1]/50)*100);
+        }
 
-        for(var key in data){
-            temp = data[key];
-            if(first < temp){
-                first = temp;
-            } else if(second < temp){
-                second = temp;
-            } else if (third < temp){
-                third = temp;
-            } else if (fourth < temp){
-                fourth = temp;
-            }
-        }
-        for(var prop in data){
-            if(data[prop] === first){
-                result[prop] = Math.ceil((first/50)*100);
-            } else if(data[prop] === second){
-                result[prop] = Math.ceil((second/50)*100);
-            } else if(data[prop] === third){
-                result[prop] = Math.ceil((third/50)*100);
-            } else if(data[prop] === fourth){
-                result[prop] = Math.ceil((fourth/50)*100);
-            }
-        }
         return result;
     }
     render() { 
@@ -131,32 +117,43 @@ class Homepage extends Component {
             }
             document.getElementsByTagName('i')[player].className = classlist;
         }
+        var getPlayer = ()=>{
+            var num_player_index = 0;
+            var num_player = document.getElementsByTagName('audio').length;
+            num_player_index = num_player-1;
+            return num_player_index;
+        }
         return (
             <div className="container">
                 <div className="container-current-top">
                     <div className="wrapper-top-header">
-                        <h1>All Time Top Track</h1>
+                        <h1 className="text-center">All Time Top Track</h1>
                         <img alt="Could Not Be Loaded" src={this.state.topTrackArtwork}/>
                     </div>
                     <div className="wrapper-top-preview">
                         <h4>{this.state.topTrack}</h4>
                         {this.state.topTrackLoaded && this.state.topTrackPreview &&
-                        <audio src={this.state.topTrackPreview}></audio>}
+                        <div>
+                            <audio src={this.state.topTrackPreview}></audio>
+                            <i onClick={()=>renderPlayPause(0)} className="fa fa-play fa-2x"></i>
+                        </div>}
                         {!this.state.topTrackPreview && <p>No Preview Available</p>}
-                        <i onClick={()=>renderPlayPause(0)} className="fa fa-play fa-2x"></i>
+                        
                     </div>
                 </div>
                 <div className="container-current-top">
                     <div className="wrapper-top-preview">
                         <h4>{this.state.topArtist}</h4>
-                        <h6>{`${this.state.topArtist} - ${this.state.topArtistTrack}`}</h6>
+                        <h6 style={{textDecoration: 'underline'}}>{`${this.state.topArtist} - ${this.state.topArtistTrack}`}</h6>
                         {this.state.topPreviewLoaded && this.state.topArtistPreview && 
-                        <audio src={this.state.topArtistPreview}></audio>}
+                        <div>
+                            <audio src={this.state.topArtistPreview}></audio>
+                            <i onClick={()=>renderPlayPause(getPlayer())} className="fa fa-play fa-2x"></i>
+                        </div>}
                         {!this.state.topArtistPreview && <p>No Preview Available</p>}
-                        <i onClick={()=>renderPlayPause(1)} className="fa fa-play fa-2x"></i>
                     </div>
                     <div className="wrapper-top-header">
-                        <h1>All Time Top Artist</h1>
+                        <h1 className="text-center">All Time Top Artist</h1>
                         <img alt="Could Not Be Loaded" src={this.state.topArtistArtwork}/>
                     </div>
                 </div>
