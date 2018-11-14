@@ -119,16 +119,24 @@ class Homepage extends Component {
 
         return result;
     }
-    render() { 
+    componentDidMount(){
+        var checkEnded = (i)=>{
+            document.getElementsByTagName('audio')[i].addEventListener('ended', ()=>{
+                document.getElementsByTagName('i')[i].className = 'fa fa-play fa-2x';
+            })
+        }
         document.addEventListener('play', function(e){
             var audios = document.getElementsByTagName('audio');
             for(var i = 0, len = audios.length; i < len;i++){
+                checkEnded(i);
                 if(audios[i] !== e.target){
                     audios[i].pause();
                     document.getElementsByTagName('i')[i].className = 'fa fa-play fa-2x';
                 }
             }
         }, true);
+    }
+    render() { 
         var renderPlayPause = (player) => {
             var classlist = document.getElementsByTagName('i')[player].className;
             var audio = document.getElementsByTagName('audio');
