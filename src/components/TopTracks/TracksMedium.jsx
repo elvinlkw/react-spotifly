@@ -66,6 +66,7 @@ class TracksMedium extends Component {
             if(audios[i] !== e.target){
                 audios[i].pause();
                 document.getElementsByTagName('i')[i].className = 'fa fa-play';
+                document.getElementsByClassName('track-list')[i].style.color = "black";
             }
         }
     }
@@ -73,12 +74,15 @@ class TracksMedium extends Component {
         var renderPlayPause = (player)=>{
             var classlist = document.getElementsByTagName('i')[player].className;
             var audio = document.getElementsByTagName('audio');
+            var list_item = document.getElementsByClassName('track-list')[player];
             if(classlist.includes('play')){
                 classlist = classlist.replace('play', 'pause');
                 audio[player].play();
+                list_item.style.color = "red";
             }else{
                 classlist = classlist.replace('pause', 'play');
                 audio[player].pause();
+                list_item.style.color = "black";
             }
             document.getElementsByTagName('i')[player].className = classlist;
         }
@@ -88,8 +92,8 @@ class TracksMedium extends Component {
                 <ol>
                     {this.state.dataValid && this.state.itemList.map((item) => {
                         return (
-                            <li key={item.key}>
-                                <i onClick={()=>renderPlayPause(item.key)} style={{opacity:'0.8'}} className="fa fa-play"></i>
+                            <li onClick={()=>renderPlayPause(item.key)} className="track-list" key={item.key}>
+                                <i className="fa fa-play"></i>
                                 {` ${item.value}`}
                                 <audio src={item.preview}></audio>
                             </li>

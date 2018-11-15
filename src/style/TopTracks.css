@@ -6,3 +6,27 @@ body{
     background: #eee;
     min-height: calc(100vh - 4rem);
 }
+
+ol:hover  {
+    
+}
+
+.track-list:hover{
+    list-style-type: none;
+    position:relative;
+    left: -1em;
+    cursor:pointer;
+}
+
+.track-list:before{
+    
+}
+
+.track-list i{
+    display: none;
+    opacity: 0.8;
+}
+
+.track-list:hover i{
+    display: inline-block;
+}
