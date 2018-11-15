@@ -18,6 +18,9 @@ class Navbar extends Component {
                         <NavLink exact to={`/profile#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">My Profile</NavLink>
                     </li>
                     <li className="nav-item">
+                        <NavLink exact to={`/search#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Search</NavLink>
+                    </li>
+                    <li className="nav-item">
                         <NavLink exact to={`/top-tracks#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Top Tracks</NavLink>
                     </li>
                     <li className="nav-item">

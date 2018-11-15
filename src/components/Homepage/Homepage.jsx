@@ -49,7 +49,6 @@ class Homepage extends Component {
             alert('Data Could Not Be Retrieved!');
         }).then((id)=>{
             spotifyApi.getAudioFeaturesForTracks(id).then((data)=>{
-                console.log(data.audio_features)
                 var energy=0, danceability=0, valence=0, bpm=0;
                 var dataArray = data.audio_features;
                 var final = [];
@@ -64,7 +63,6 @@ class Homepage extends Component {
                 danceability = danceability/dataArray.length;
                 valence = valence/dataArray.length;
                 final.push(bpm, energy, danceability, valence);
-                console.log(final)
             })
         });
 
@@ -119,22 +117,26 @@ class Homepage extends Component {
 
         return result;
     }
-    componentDidMount(){
+    handleStop(e){
         var checkEnded = (i)=>{
             document.getElementsByTagName('audio')[i].addEventListener('ended', ()=>{
                 document.getElementsByTagName('i')[i].className = 'fa fa-play fa-2x';
             })
         }
-        document.addEventListener('play', function(e){
-            var audios = document.getElementsByTagName('audio');
-            for(var i = 0, len = audios.length; i < len;i++){
-                checkEnded(i);
-                if(audios[i] !== e.target){
-                    audios[i].pause();
-                    document.getElementsByTagName('i')[i].className = 'fa fa-play fa-2x';
-                }
+        var audios = document.getElementsByTagName('audio');
+        for(var i = 0, len = audios.length; i < len;i++){
+            checkEnded(i);
+            if(audios[i] !== e.target){
+                audios[i].pause();
+                document.getElementsByTagName('i')[i].className = 'fa fa-play fa-2x';
             }
-        }, true);
+        }
+    }
+    componentDidMount(){
+        document.addEventListener('play', this.handleStop ,true);
+    }
+    componentWillUnmount(){
+        document.removeEventListener('play', this.handleStop ,true);
     }
     render() { 
         var renderPlayPause = (player) => {

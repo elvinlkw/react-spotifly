@@ -54,16 +54,22 @@ class TracksMedium extends Component {
             });
         });
     }
-    render() { 
-        document.addEventListener('play', function(e){
-            var audios = document.getElementsByTagName('audio');
-            for(var i = 0, len = audios.length; i < len;i++){
-                if(audios[i] !== e.target){
-                    audios[i].pause();
-                    document.getElementsByTagName('i')[i].className = 'fa fa-play';
-                }
+    componentDidMount(){
+        document.addEventListener('play', this.handlePause, true);
+    }
+    componentWillUnmount(){
+        document.removeEventListener('play', this.handlePause, true);
+    }
+    handlePause(e){
+        var audios = document.getElementsByTagName('audio');
+        for(var i = 0, len = audios.length; i < len;i++){
+            if(audios[i] !== e.target){
+                audios[i].pause();
+                document.getElementsByTagName('i')[i].className = 'fa fa-play';
             }
-        }, true);
+        }
+    }
+    render() { 
         var renderPlayPause = (player)=>{
             var classlist = document.getElementsByTagName('i')[player].className;
             var audio = document.getElementsByTagName('audio');
