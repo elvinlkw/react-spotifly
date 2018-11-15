@@ -24,14 +24,26 @@ input:focus::-ms-input-placeholder{
     padding-top: 3rem;
 }
 
-.form-control{
+.album-header{
+    margin-left: 4rem;
+    margin-right: 4rem;
+    border-top: 1px black dotted;
+    border-bottom: 1px black dotted;
+}
+
+.album-header:hover{
+    cursor: pointer;
+}
+
+.text-center .form-control{
     width: 20rem!important;
     margin: 1rem auto;
     text-align:center;
     background: #ddd!important;
 }
 
-.form-control:focus, .form-control:hover{
+.text-center .form-control:focus, 
+.text-center  .form-control:hover{
     background: #bbb!important;
 }
 
@@ -42,6 +54,21 @@ input:focus::-ms-input-placeholder{
 
 .search-result h6{
     width: 20rem;
+}
+
+.form-group{
+    position: relative;
+    width: 10rem;
+    margin: 0 auto;
+}
+
+.form-group p{
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.form-group .form-control{
+    width: 100%;
 }
 
 .image-artwork{

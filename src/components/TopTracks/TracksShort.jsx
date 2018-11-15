@@ -77,7 +77,8 @@ class TracksShort extends Component {
             var audio = document.getElementsByTagName('audio');
             if(classlist.includes('play')){
                 classlist = classlist.replace('play', 'pause');
-                audio[player].play();     
+                audio[player].play();
+                audio[player].volume = 0.5;
                 list_item.style.color = "red";
             }else{
                 classlist = classlist.replace('pause', 'play');
