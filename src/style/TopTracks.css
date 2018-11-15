@@ -7,19 +7,11 @@ body{
     min-height: calc(100vh - 4rem);
 }
 
-ol:hover  {
-    
-}
-
 .track-list:hover{
     list-style-type: none;
     position:relative;
     left: -1em;
     cursor:pointer;
-}
-
-.track-list:before{
-    
 }
 
 .track-list i{
