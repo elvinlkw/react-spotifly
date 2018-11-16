@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SpotifyApi from 'spotify-web-api-js';
 import './../../style/Search.css';
+import Modal from './Modal';
 const spotifyApi = new SpotifyApi();
 
 class Search extends Component {
@@ -14,12 +15,17 @@ class Search extends Component {
         this.state = {
             track: [],
             album: [],
+            tracklist: [],
+            trackArtist: [],
+            albumArtwork: '',
             selectedOption: 'popularity',
             searchCompleted: false,
-            showTracklist: false
+            showTracklist: false,
+            show: false
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleOption = this.handleOption.bind(this);
+        this.hideModal = this.hideModal.bind(this);
     }
     componentDidUpdate(){
         this.refs.searchText.focus();
@@ -44,6 +50,13 @@ class Search extends Component {
             trackArray[i].key = i
         }
         return trackArray;
+    }
+    hideModal(e){
+        e.preventDefault();
+        this.setState({
+            tracklist: [],
+            show: false
+        })
     }
     handleSubmit(e, sort){
         e.preventDefault();
@@ -72,9 +85,6 @@ class Search extends Component {
                     }
                 }
                 album = this.sortArrayByDate(album, 'date-desc');
-
-                // fetch("https://api.spotify.com/v1/albums/4f9voI47wfAZIp0UgwGy6o?access_token=BQAnsv_02ccmVEtwBPTKp58JgSxqNrb9UMuChFG8ces9KQv52buVcxUsJGyTPnmiIAZsfb8-J9k4Y4VkLtq0QOv5rZJIAzMy6I5pednMRe2QYPHV7K5qO5ap1SVxOv4Jf4BimpYM4OvP_kh2iJXvJWyCdGFt1f_wfIx0k2ZRzSrybO_MI37TzIpKQw")
-
                 // Code for Track Filtering
                 for(let i=0; i<res.tracks.items.length; i++){
                     let obj = {};
@@ -99,10 +109,18 @@ class Search extends Component {
         }
     }
     handlePause(e){
-        var audio_player = document.getElementsByTagName('audio');
-        for(var i = 0, len = audio_player.length; i < len;i++){
+        var audio_player = document.getElementsByClassName('track-preview');
+        var track_player = document.getElementsByClassName('album-preview');
+        for(let i = 0, len = audio_player.length; i < len;i++){
             if(audio_player[i] !== e.target){
                 audio_player[i].pause();
+            }
+        }
+        for(let i = 0, len = track_player.length; i < len;i++){
+            if(track_player[i] !== e.target){
+                track_player[i].pause();
+                document.getElementsByTagName('i')[i].className = 'fa fa-play';
+                document.getElementsByClassName('track-item')[i].style.color = "black";
             }
         }
     }
@@ -113,16 +131,42 @@ class Search extends Component {
     }
     handleOpenTracklist(apiURL){
         var reformatedURL = `${apiURL}?access_token=${this.token}`;
+        var trackArray = [];
         fetch(reformatedURL).then((res)=>{
             return res.json();
         }).then((data)=>{
             for(var i = 0; i<data.tracks.items.length; i++){
-                console.log(data.tracks.items[i].name);
+                let obj = {};
+                obj['key'] = i;
+                obj['tracklist'] = data.tracks.items[i].name;
+                obj['preview'] = data.tracks.items[i].preview_url;
+                trackArray.push(obj);
             }
-            
-        })
+            this.setState({
+                tracklist: trackArray,
+                trackArtist: [data.artists[0].name, data.name],
+                albumArtwork: data.images[1].url,
+                show: true
+            });
+        });
     }
-    render() { 
+    playTrack(player){
+        var audio_player = document.getElementsByClassName('album-preview')[player];
+        var classlist = document.getElementsByTagName('i')[player].className;
+        var list_item = document.getElementsByClassName('track-item')[player];
+        if(classlist.includes('play')){
+            classlist = classlist.replace('play', 'pause');
+            audio_player.play();
+            audio_player.volume = 0.5;
+            list_item.style.color = "red";
+        }else{
+            classlist = classlist.replace('pause', 'play');
+            audio_player.pause();
+            list_item.style.color = "black";
+        }
+        document.getElementsByTagName('i')[player].className = classlist;
+    }
+    render() {
         var playPreview = (num, preview)=>{
             if(!preview){
                 alert('No Preview Found.');
@@ -144,15 +188,40 @@ class Search extends Component {
                     <div>
                         <h1 className="text-center">Albums</h1>
                         <div id="album-container" style={{position: 'relative', display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around', padding: '0 2rem'}}>
-                        {this.state.album.map((album)=>{
-                            return(
-                                <div key={album.key} style={{margin: '2rem 1rem'}}>
-                                    <img onClick={()=>this.handleOpenTracklist(album.url)} className="image-artwork" alt="NoPreview" src={album.artwork}></img>
-                                    <h6 style={{paddingTop: '10px', fontWeight: 'bold'}} className="text-center">{album.artist}</h6>
-                                    <h6 className="text-center" style={{fontWeight: 'bold'}}>{album.album}</h6>
+                            <Modal show={this.state.show}>
+                                <div className="image-container">
+                                    <img className="track-artwork" src={this.state.albumArtwork} alt="not available"></img>
+                                    <div style={{width: '20rem', paddingLeft: '3rem'}}>
+                                        <h2>{this.state.trackArtist[0]}</h2>
+                                        <h3>{this.state.trackArtist[1]}</h3>
+                                    </div>
                                 </div>
-                            )
-                        })}</div>
+                                <div className="track-list-container">
+                                    <h1>Tracklist</h1>
+                                    <ol>{this.state.tracklist.map((track)=>{
+                                        return(
+                                            <div className="track-item-container" key={track.key} onClick={()=>this.playTrack(track.key)}>
+                                                <audio className="album-preview" src={track.preview}></audio>
+                                                <li className="track-item">
+                                                    <i className="fa fa-play"></i>
+                                                    {`${track.tracklist}`}
+                                                </li>
+                                            </div>
+                                        )
+                                    })}</ol>
+                                    <button onClick={this.hideModal}>Close</button>
+                                </div>
+                            </Modal>
+                            {this.state.album.map((album)=>{
+                                return(
+                                    <div key={album.key} style={{margin: '2rem 1rem'}}>
+                                        <img onClick={()=>this.handleOpenTracklist(album.url)} className="image-artwork" alt="NoPreview" src={album.artwork}></img>
+                                        <h6 style={{paddingTop: '10px', fontWeight: 'bold'}} className="text-center">{album.artist}</h6>
+                                        <h6 className="text-center" style={{fontWeight: 'bold'}}>{album.album}</h6>
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
                     <div>
                         <h1 className="text-center">Tracks</h1>
@@ -168,7 +237,7 @@ class Search extends Component {
                         {this.state.track.map((track)=>{
                             return(
                                 <div key={track.key} style={{margin: '2rem 1rem'}}>
-                                    <audio src={track.preview} />
+                                    <audio className="track-preview" src={track.preview} />
                                     <img className="image-artwork" onClick={()=>playPreview(track.key, track.preview)} alt="NoPreview" src={track.artwork}></img>
                                     <h6 style={{paddingTop: '10px'}} className="text-center">{track.artist}</h6>
                                     <h6 className="text-center">{track.track}</h6>
