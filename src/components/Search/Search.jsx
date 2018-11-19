@@ -67,7 +67,7 @@ class Search extends Component {
         var track = [], album = [];
         if (input && input.length > 1){
             document.getElementById('header').innerHTML = `Search: ${input}`;
-            spotifyApi.search(input, ['track', 'album'], {limit:50}).then((res)=>{
+            spotifyApi.search(input, ['track', 'album'], {limit: 10}).then((res)=>{
                 //Code for Album Filtering
                 var albums = res.albums;
                 var key_count = 0;
@@ -85,28 +85,57 @@ class Search extends Component {
                     }
                 }
                 album = this.sortArrayByDate(album, 'date-desc');
+
                 // Code for Track Filtering
-                for(let i=0; i<res.tracks.items.length; i++){
-                    let obj = {};
-                    obj['key'] = i;
-                    obj['release_date'] = res.tracks.items[i].album.release_date;
-                    obj['artist'] = res.tracks.items[i].artists[0].name;
-                    obj['track'] = res.tracks.items[i].name;
-                    obj['artwork'] = res.tracks.items[i].album.images[1].url;
-                    obj['preview'] = res.tracks.items[i].preview_url;
-                    track.push(obj);
+                let promiseArray = [];
+                for (let i = 0; i < res.tracks.items.length; i++) {
+                    promiseArray.push(this.getTrackDetails(i, res.tracks.items[i], track));
                 }
-                if(sort.includes("date")){
-                    track = this.sortArrayByDate(track, sort);
-                }
-                this.setState({
-                    track: track,
-                    album: album,
-                    searchCompleted: true
-                });
-            });
-            
+
+                Promise.all(promiseArray).then(function() {
+                    if(sort.includes("date")){
+                        track = this.sortArrayByDate(track, sort);
+                    }
+                    this.setState({
+                        track: track,
+                        album: album,
+                        searchCompleted: true
+                    });
+                }.bind(this));
+            })            
         }
+    }
+    getTrackDetails(i, trackObj, track) {
+        let tPromise = new Promise(function(resolve, reject) {
+            let obj = {};
+            obj['key'] = i;
+            obj['release_date'] = trackObj.album.release_date;
+            obj['artist'] = trackObj.artists[0].name;
+            obj['id']=trackObj.album.id;
+            obj['track'] = trackObj.name;
+            obj['artwork'] = trackObj.album.images[1].url;
+            obj['preview'] = trackObj.preview_url;
+            if(trackObj.preview_url === null){
+                let reformatedURL = `${trackObj.album.href}?access_token=${this.token}`;
+                fetch(reformatedURL).then((res)=>{
+                    return res.json();
+                }).then((data)=>{
+                    let filtered = data.tracks.items.filter(i => {
+                        return i.name === obj['track'];
+                    });
+                    if (filtered.length > 0) {
+                        obj['preview'] = filtered[0].preview_url
+                        track.push(obj)
+                    }
+                    resolve();
+                });
+            } else {
+                track.push(obj);
+                resolve();
+            }
+        }.bind(this));
+
+        return tPromise;
     }
     handlePause(e){
         var audio_player = document.getElementsByClassName('track-preview');
