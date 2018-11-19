@@ -40,11 +40,15 @@ class Search extends Component {
         if(sort === 'date-desc'){
             trackArray.sort((a, b)=>{
                 return new Date(b.release_date) - new Date(a.release_date)
-            })
-        } else{
+            });
+        } else if(sort === 'date-asc'){
             trackArray.sort((a, b)=>{
                 return new Date(a.release_date) - new Date(b.release_date)
-            })
+            });
+        } else{
+            trackArray.sort((a,b)=>{
+                return b.popularity - a.popularity;
+            });
         }
         for(var i=0; i<trackArray.length; i++){
             trackArray[i].key = i
@@ -67,7 +71,7 @@ class Search extends Component {
         var track = [], album = [];
         if (input && input.length > 1){
             document.getElementById('header').innerHTML = `Search: ${input}`;
-            spotifyApi.search(input, ['track', 'album'], {limit: 10}).then((res)=>{
+            spotifyApi.search(input, ['track', 'album'], {limit: 50}).then((res)=>{
                 //Code for Album Filtering
                 var albums = res.albums;
                 var key_count = 0;
@@ -93,9 +97,8 @@ class Search extends Component {
                 }
 
                 Promise.all(promiseArray).then(function() {
-                    if(sort.includes("date")){
-                        track = this.sortArrayByDate(track, sort);
-                    }
+                    track = this.sortArrayByDate(track, sort);
+                    
                     this.setState({
                         track: track,
                         album: album,
@@ -109,6 +112,7 @@ class Search extends Component {
         let tPromise = new Promise(function(resolve, reject) {
             let obj = {};
             obj['key'] = i;
+            obj['popularity'] = trackObj.popularity;
             obj['release_date'] = trackObj.album.release_date;
             obj['artist'] = trackObj.artists[0].name;
             obj['id']=trackObj.album.id;
@@ -238,8 +242,8 @@ class Search extends Component {
                                             </div>
                                         )
                                     })}</ol>
-                                    <button onClick={this.hideModal}>Close</button>
                                 </div>
+                                <button className="modal-close-button" onClick={this.hideModal}>X</button>
                             </Modal>
                             {this.state.album.map((album)=>{
                                 return(
@@ -263,11 +267,11 @@ class Search extends Component {
                             </select>
                         </div>
                         <div style={{position: 'relative', display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around', padding: '0 2rem'}}>
-                        {this.state.track.map((track)=>{
+                        {this.state.track.map((track, index)=>{
                             return(
-                                <div key={track.key} style={{margin: '2rem 1rem'}}>
+                                <div key={index} style={{margin: '2rem 1rem'}}>
                                     <audio className="track-preview" src={track.preview} />
-                                    <img className="image-artwork" onClick={()=>playPreview(track.key, track.preview)} alt="NoPreview" src={track.artwork}></img>
+                                    <img className="image-artwork" onClick={()=>playPreview(index, track.preview)} alt="NoPreview" src={track.artwork}></img>
                                     <h6 style={{paddingTop: '10px'}} className="text-center">{track.artist}</h6>
                                     <h6 className="text-center">{track.track}</h6>
                                 </div>
