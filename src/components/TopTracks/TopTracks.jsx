@@ -11,16 +11,16 @@ class TopTracks extends Component {
         super();
         let url = window.location.href;
         if(url.indexOf("token=") > -1){ 
-            var token = url.split("token=")[1].split("&")[0].trim();
+            this.token = url.split("token=")[1].split("&")[0].trim();
         }
-        spotifyApi.setAccessToken(token);
+        spotifyApi.setAccessToken(this.token);
     }
     render() { 
         return (
             <div className="top-track-container">
                 <h1 className="text-center">Top Tracks</h1>
                 <div className="row">
-                    <TracksShort spotifyApi={spotifyApi}/>
+                    <TracksShort spotifyApi={spotifyApi} token={this.token}/>
                     <TracksMedium spotifyApi={spotifyApi}/>
                     <TracksLong spotifyApi={spotifyApi}/>
                 </div>

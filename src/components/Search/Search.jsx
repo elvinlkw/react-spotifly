@@ -95,10 +95,8 @@ class Search extends Component {
                 for (let i = 0; i < res.tracks.items.length; i++) {
                     promiseArray.push(this.getTrackDetails(i, res.tracks.items[i], track));
                 }
-
                 Promise.all(promiseArray).then(function() {
-                    track = this.sortArrayByDate(track, sort);
-                    
+                    track = this.sortArrayByDate(track, sort);                    
                     this.setState({
                         track: track,
                         album: album,

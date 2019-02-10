@@ -7,27 +7,49 @@ class TracksShort extends Component {
             itemList: [],
             dataValid: false
         }
+        this.getTrackInfo = this.getTrackInfo.bind(this);
+    }
+    getTrackInfo(i, trackObj, tempArray){
+        let tPromise = new Promise(function(resolve, reject) {
+            var obj = {};
+            var artist = '';
+            for (var j=0; j<trackObj.artists.length;j++){
+                if(artist.length > 1){
+                    artist += ', ' + trackObj.artists[j].name;
+                }else{
+                    artist += trackObj.artists[j].name;
+                }
+            }
+            obj['key'] = i;
+            obj['value'] = artist + ' - ' + trackObj.name;
+            obj['preview'] = trackObj.preview_url;
+            if(trackObj.preview_url === null){
+                let reformatedURL = `${trackObj.album.href}?access_token=${this.token}`;
+                fetch(reformatedURL).then(res=>{
+                    return res.json();
+                }).then(data => {
+                    console.log(data);
+                })
+            }
+            tempArray.push(obj);
+        }.bind(this));
+
+        return tPromise;
     }
     componentWillMount(){
         var {spotifyApi} = this.props;
         var tempArray = [];
         spotifyApi.getMyTopTracks({limit: 50, time_range: 'short_term'}).then((res) => {
-			for(var i=0; i < res.items.length; i++){
-                var obj = {};
-                var artist = '';
-                for (var j=0; j<res.items[i].artists.length;j++){
-                    if(artist.length > 1){
-                        artist += ', ' + res.items[i].artists[j].name;
-                    }else{
-                        artist += res.items[i].artists[j].name;
-                    }
-                }
-				obj['key'] = i;
-                obj['value'] = artist + ' - ' + res.items[i].name;
-                obj['preview'] = res.items[i].preview_url;
-				tempArray.push(obj);
+            var promiseArray = [];
+            console.log(res.items[1]);
+
+            for(let i = 0; i < res.items.length; i++){
+                promiseArray.push(this.getTrackInfo(i, res.items[i], tempArray))
             }
-            return;
+
+            Promise.all(promiseArray).then(function(){
+                return;
+            }.bind(this));
 		}, (res) => {
 			alert('Error: Could Not Retrieve Data From Server');
 		}).then(()=>{
