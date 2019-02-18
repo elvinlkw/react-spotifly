@@ -163,7 +163,7 @@ class Homepage extends Component {
                 <div className="container-current-top">
                     <div className="wrapper-top-header">
                         <h1 className="text-center">All Time Top Track</h1>
-                        <img alt="Could Not Be Loaded" src={this.state.topTrackArtwork}/>
+                        <img alt="Could Not Be Loaded" src={this.state.topTrackArtwork} className="img-artwork"/>
                     </div>
                     <div className="wrapper-top-preview">
                         <h4>{this.state.topTrack}</h4>
@@ -189,7 +189,7 @@ class Homepage extends Component {
                     </div>
                     <div className="wrapper-top-header">
                         <h1 className="text-center">All Time Top Artist</h1>
-                        <img alt="Could Not Be Loaded" src={this.state.topArtistArtwork}/>
+                        <img alt="Could Not Be Loaded" src={this.state.topArtistArtwork} className="img-artwork"/>
                     </div>
                 </div>
                 <div className="container-favorite-genres">
