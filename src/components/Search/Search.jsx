@@ -291,7 +291,8 @@ class Search extends Component {
                                         )
                                     })}</ol>
                                 </div>
-                                <button className="modal-close-button" onClick={this.hideModal}>X</button>
+                                {/* <button className="modal-close-button" onClick={this.hideModal}>X</button> */}
+                                <span><i className="fa fa-window-close modal-close-button" onClick={this.hideModal}></i></span>
                             </Modal>
                             {this.state.album.map((album)=>{
                                 return(

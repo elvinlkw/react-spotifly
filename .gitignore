@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 
-/constants/app_cred.js
+/src/constants/app_cred.js
 
 # testing
 /coverage
