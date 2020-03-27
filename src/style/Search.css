@@ -49,6 +49,14 @@ input:focus::-ms-input-placeholder{
     background: #bbb!important;
 }
 
+#album-container{
+    position: relative;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    padding: 0 2rem;
+}
+
 .btn{
     width: 20rem!important;
     color: black!important;

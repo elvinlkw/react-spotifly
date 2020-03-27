@@ -1,8 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
-
 body{
     overflow-x: hidden;
-    font-family: 'Open Sans', sans-serif;
 }
 
 .top-track-container{
@@ -27,13 +24,13 @@ body{
 
 .image-container{
     display: flex;
-    flex-direction: row;
 }
 
 .track-img{
     width: 100%;
     max-width: 30em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 1);
+    margin-top: 2em;
 }
 
 .image-container div p{

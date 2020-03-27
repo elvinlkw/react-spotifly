@@ -1,3 +1,7 @@
+hr{
+    margin: 3em;
+}
+
 .modal {
     position: fixed;
     top: 0;
@@ -33,6 +37,25 @@
     display: none;
 }
 
+.artwork-container{
+    flex-direction: column;
+}
+
+/* .track-info{
+    width: 12em;
+    padding-left: 3rem;
+} */
+
+.track-info h2,
+.track-info p{
+    width: 12em;
+    margin-left: 3rem;
+    margin-bottom: 0;
+}
+.track-info audio{
+    margin-left: 3rem;
+}
+
 .track-item{
     font-size: 1.5rem;
     color: #000;
@@ -40,23 +63,24 @@
 }
 
 .track-item:hover{
-    list-style: none;
     position: relative;
-    left: -1em;
 }
 
 .track-item i{
-    display:none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    margin: 0.2em;
 }
 
 .track-item:hover i{
-    display: inline-block;
-    padding-right: 0.21em;
+    opacity: 1;
 }
 
 .track-artwork{
+    width: 100%;
     align-self: flex-start;
     padding: 3rem;
+    
 }
 
 .modal-close-button{

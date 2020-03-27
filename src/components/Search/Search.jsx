@@ -18,10 +18,14 @@ class Search extends Component {
             tracklist: [],
             trackArtist: [],
             albumArtwork: '',
+            releaseDate: '',
+            duration: '',
+            preview: '',
             selectedOption: 'popularity',
             searchCompleted: false,
             showTracklist: false,
-            show: false
+            show: false,
+            currentlyPlaying: null
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleOption = this.handleOption.bind(this);
@@ -59,8 +63,10 @@ class Search extends Component {
         e.preventDefault();
         this.setState({
             tracklist: [],
-            show: false
-        })
+            show: false,
+            currentlyPlaying: null
+        });
+        document.querySelector('audio').pause();
     }
     handleSubmit(e, sort){
         e.preventDefault();
@@ -150,7 +156,7 @@ class Search extends Component {
         for(let i = 0, len = track_player.length; i < len;i++){
             if(track_player[i] !== e.target){
                 track_player[i].pause();
-                document.getElementsByTagName('i')[i].className = 'fa fa-play';
+                document.getElementsByTagName('i')[i].className = 'fa fa-play-circle';
                 document.getElementsByClassName('track-item')[i].style.color = "black";
             }
         }
@@ -160,9 +166,9 @@ class Search extends Component {
         this.setState({selectedOption: event.target.value});
         this.handleSubmit(event, sort);
     }
-    handleOpenTracklist(apiURL){
+    handleOpenTracklist(apiURL, releaseDate){
         var reformatedURL = `${apiURL}?access_token=${this.token}`;
-        var trackArray = [];
+        var trackArray = [], duration_ms = 0, duration;
         fetch(reformatedURL).then((res)=>{
             return res.json();
         }).then((data)=>{
@@ -171,24 +177,59 @@ class Search extends Component {
                 obj['key'] = i;
                 obj['tracklist'] = data.tracks.items[i].name;
                 obj['preview'] = data.tracks.items[i].preview_url;
+                duration_ms += data.tracks.items[i].duration_ms;
                 trackArray.push(obj);
+            }
+            // If duration is less than an hour, display minute and seconds
+            if(duration_ms < (1 * 60 * 60 * 1000)){
+                let seconds = Math.floor((duration_ms / 1000)%60),
+                    minutes = Math.floor((duration_ms / (1000 * 60)));
+                duration  = `${minutes} min ${seconds}s`;
+            }else{
+                let minutes = Math.floor((duration_ms / (1000 * 60)) % 60),
+                    hours = Math.floor((duration_ms / (1000 * 60 * 60)) % 24);
+                duration = `${hours} hours ${minutes} min`;
             }
             this.setState({
                 tracklist: trackArray,
                 trackArtist: [data.artists[0].name, data.name],
                 albumArtwork: data.images[1].url,
-                show: true
+                releaseDate: releaseDate,
+                duration: duration,
+                show: true,
+                isAlbumPlaying: false,
             });
         });
     }
-    playTrack(player){
-        var audio_player = document.getElementsByClassName('album-preview')[player];
-        var classlist = document.getElementsByTagName('i')[player].className;
-        var list_item = document.getElementsByClassName('track-item')[player];
+    playTrack(player, preview){
+        var audio_player = document.querySelector('audio');
+        var classlist = document.querySelectorAll('i')[player].className;
+        var list_item = document.querySelectorAll('.track-item')[player];
+
+        if(this.state.currentlyPlaying !== null){
+            // eslint-disable-next-line
+            let currentPlayer = document.querySelectorAll('i')[this.state.currentlyPlaying].className;
+            currentPlayer = currentPlayer.replace('pause', 'play');
+            audio_player.pause();
+            document.getElementsByClassName('track-item')[this.state.currentlyPlaying].style.color = "black";
+        }
+        var playPromise = audio_player.play();
+
         if(classlist.includes('play')){
             classlist = classlist.replace('play', 'pause');
-            audio_player.play();
-            audio_player.volume = 0.5;
+            if (playPromise !== undefined) {
+                playPromise
+                .then(_ => {
+                    // Automatic playback started!
+                    // Show playing UI.
+                    // console.log("audio played auto");
+                })
+                .catch(error => {
+                    // Auto-play was prevented
+                    // Show paused UI.
+                    // console.log("playback prevented");
+                });
+            }
             list_item.style.color = "red";
         }else{
             classlist = classlist.replace('pause', 'play');
@@ -196,6 +237,12 @@ class Search extends Component {
             list_item.style.color = "black";
         }
         document.getElementsByTagName('i')[player].className = classlist;
+
+
+        this.setState({
+            preview: preview,
+            currentlyPlaying: player
+        });
     }
     render() {
         var playPreview = (num, preview)=>{
@@ -218,23 +265,26 @@ class Search extends Component {
                 <div className="search-result">
                     <div>
                         <h1 className="text-center">Albums</h1>
-                        <div id="album-container" style={{position: 'relative', display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around', padding: '0 2rem'}}>
+                        <div id="album-container">
                             <Modal show={this.state.show}>
-                                <div className="image-container">
+                                <div className="artwork-container">
                                     <img className="track-artwork" src={this.state.albumArtwork} alt="not available"></img>
-                                    <div style={{width: '20rem', paddingLeft: '3rem'}}>
-                                        <h2>{this.state.trackArtist[0]}</h2>
-                                        <h3>{this.state.trackArtist[1]}</h3>
+                                    <div className="track-info">
+                                        <h2>{this.state.trackArtist[1]}</h2>
+                                        <hr/>
+                                        <p>By {this.state.trackArtist[0]}</p>
+                                        <p>{this.state.releaseDate}</p>
+                                        <p>{this.state.tracklist.length} Songs - {this.state.duration}</p>
+                                        <audio autoPlay controls src={this.state.preview}></audio>
                                     </div>
                                 </div>
                                 <div className="track-list-container">
                                     <h1>Tracklist</h1>
                                     <ol>{this.state.tracklist.map((track)=>{
                                         return(
-                                            <div className="track-item-container" key={track.key} onClick={()=>this.playTrack(track.key)}>
-                                                <audio className="album-preview" src={track.preview}></audio>
+                                            <div className="track-item-container" key={track.key} onClick={()=>this.playTrack(track.key, track.preview)}>
                                                 <li className="track-item">
-                                                    <i className="fa fa-play"></i>
+                                                    <i className="fa fa-play-circle"></i>
                                                     {`${track.tracklist}`}
                                                 </li>
                                             </div>
@@ -246,7 +296,7 @@ class Search extends Component {
                             {this.state.album.map((album)=>{
                                 return(
                                     <div key={album.key} style={{margin: '2rem 1rem'}}>
-                                        <img onClick={()=>this.handleOpenTracklist(album.url)} className="image-artwork" alt="NoPreview" src={album.artwork}></img>
+                                        <img onClick={()=>this.handleOpenTracklist(album.url, album.release_date)} className="image-artwork" alt="NoPreview" src={album.artwork}></img>
                                         <h6 style={{paddingTop: '10px', fontWeight: 'bold'}} className="text-center">{album.artist}</h6>
                                         <h6 className="text-center" style={{fontWeight: 'bold'}}>{album.album}</h6>
                                     </div>
