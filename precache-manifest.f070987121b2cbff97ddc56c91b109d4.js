@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/react-spotifly/static/media/fontawesome-webfont.af7ae505.woff2"
   },
   {
-    "revision": "75ba17cdb789efe0522c",
+    "revision": "93b935cede706f95fe56",
     "url": "/react-spotifly/static/css/main.8fc08483.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = [
     "url": "/react-spotifly/static/js/runtime~main.143d840e.js"
   },
   {
-    "revision": "75ba17cdb789efe0522c",
-    "url": "/react-spotifly/static/js/main.75ba17cd.chunk.js"
+    "revision": "93b935cede706f95fe56",
+    "url": "/react-spotifly/static/js/main.93b935ce.chunk.js"
   },
   {
     "revision": "fee66e712a8a08eef5805a46892932ad",
@@ -40,7 +40,7 @@ self.__precacheManifest = [
     "url": "/react-spotifly/static/css/1.37b49f3a.chunk.css"
   },
   {
-    "revision": "5ea643aee7cb91d4510c78891c5c06b2",
+    "revision": "cedda9a4cc918cf6340c293970fbdbc2",
     "url": "/react-spotifly/index.html"
   }
 ];
