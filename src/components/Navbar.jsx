@@ -6,7 +6,7 @@ class Navbar extends Component {
     render() { 
         var {token} = this.props;
         return (
-            <div className="navbar bg-dark navbar-expand">
+            <div className="navbar navbar-expand">
                 <span className="navbar-brand">
                     <NavLink exact to={`/#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Spotifly</NavLink>
                 </span>
