@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/react-spotifly/precache-manifest.b4557661c740d68d1d17b72a9d56a44f.js"
+  "/react-spotifly/precache-manifest.8581ec39a25e0ea67daffd4a38480b91.js"
 );
 
 workbox.clientsClaim();
