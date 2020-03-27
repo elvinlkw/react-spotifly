@@ -63,6 +63,7 @@ class Search extends Component {
         e.preventDefault();
         this.setState({
             tracklist: [],
+            preview: '',
             show: false,
             currentlyPlaying: null
         });
