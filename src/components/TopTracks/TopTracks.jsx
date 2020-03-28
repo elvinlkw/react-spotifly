@@ -33,7 +33,7 @@ class TopTracks extends Component {
                         <option value="lg-term">All Time</option>
                     </select>
                 </div>
-                <div className="" style={{display: "flex", flexDirection: 'row', justifyContent: 'center'}}>
+                <div className="top-tracks-wrapper row">
                     {this.state.term === 'sh-term' && <TracksShort spotifyApi={spotifyApi} token={this.token}/>}
                     {this.state.term === 'md-term' && <TracksMedium spotifyApi={spotifyApi} token={this.token}/>}
                     {this.state.term === 'lg-term' && <TracksLong spotifyApi={spotifyApi} token={this.token}/>}

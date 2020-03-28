@@ -7,6 +7,12 @@ body{
     min-height: calc(100vh - 4rem);
 }
 
+.top-tracks-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .track-list:hover{
     cursor: pointer;
     color: darkblue;
@@ -57,4 +63,47 @@ body{
 
 .image-container div audio:focus{
     outline: none;
+}
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 812px) 
+and (-webkit-min-device-pixel-ratio: 3){
+
+    .top-track-container{
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    .col-lg-4 p{
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 1.2rem;
+    }
+
+    .col-lg-4{
+        order: 2;
+    }
+
+    .col-lg-8{
+        order: 1;
+    }
+
+    .track-container{
+        margin-left: 1rem;
+        padding-right: 20px;
+    }
+
+    .track-img{
+        width: 60%;
+        margin: 2em auto 0 auto;
+    }
+
+    .image-container{
+        flex-direction: column;
+    }
+
+    .image-container div{
+        padding-top: 2rem;
+    }
 }

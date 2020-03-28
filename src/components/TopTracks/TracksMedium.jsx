@@ -93,7 +93,7 @@ class TracksMedium extends Component {
     render() { 
         return (
             <React.Fragment>
-                <div className="col-4">
+                <div className="col-lg-4">
                     <p style={{fontWeight: 'bold'}}>Short Term (4 weeks)</p>
                     <div className="track-container">
                         <ol>
@@ -107,7 +107,7 @@ class TracksMedium extends Component {
                         </ol>
                     </div>
                 </div>
-                <div className="col-8">
+                <div className="col-lg-8">
                     {this.state.dataValid && this.state.songFocus &&
                     <div className="image-container">
                         <img className="track-img" src={this.state.image_src} alt="" />
