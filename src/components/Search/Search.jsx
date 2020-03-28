@@ -77,7 +77,7 @@ class Search extends Component {
         var input = this.refs.searchText.value;
         var track = [], album = [];
         if (input && input.length > 1){
-            document.getElementById('header').innerHTML = `Search: ${input}`;
+            document.getElementById('header').innerHTML = `Results: ${input}`;
             spotifyApi.search(input, ['track', 'album'], {limit: 50}).then((res)=>{
                 //Code for Album Filtering
                 var albums = res.albums;

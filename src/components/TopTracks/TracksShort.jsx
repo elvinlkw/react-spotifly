@@ -96,7 +96,7 @@ class TracksShort extends Component {
                     <p style={{fontWeight: 'bold'}}>Short Term (4 weeks)</p>
                     <div className="track-container">
                         <ol>
-                            {this.state.dataValid && this.state.itemList.map((item) => {
+                            {this.state.dataValid && this.state.itemList.slice(0, 20).map((item) => {
                                 return (
                                     <li className="track-list" key={item.key} onClick={()=>this.handleClick(item.key, item.value)}>
                                         {` ${item.value}`}
