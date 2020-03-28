@@ -176,24 +176,6 @@ class Homepage extends Component {
                         
                     </div>
                 </div>
-                {/* <div className="top-container">
-                    <div className="row">
-                        <div className="col-lg-6 col-push-6">
-                            <h4>{this.state.topArtist}</h4>
-                            <h6 style={{textDecoration: 'underline'}}>{`${this.state.topArtist} - ${this.state.topArtistTrack}`}</h6>
-                            {this.state.topPreviewLoaded && this.state.topArtistPreview && 
-                            <div>
-                                <audio src={this.state.topArtistPreview}></audio>
-                                <i onClick={()=>renderPlayPause(getPlayer())} className="fa fa-play fa-2x"></i>
-                            </div>}
-                            {!this.state.topArtistPreview && <p>No Preview Available</p>}
-                        </div>
-                        <div className="col-lg-6 col-pull-6">
-                            <h1 className="text-center">All Time Top Artist</h1>
-                            <img alt="Could Not Be Loaded" src={this.state.topArtistArtwork} className="img-artwork"/>
-                        </div>
-                    </div>
-                </div> */}
                 <div className="container-current-top">
                     <div className="wrapper-top-preview" id="tp-artist-2">
                         <h4>{this.state.topArtist}</h4>
@@ -217,7 +199,7 @@ class Homepage extends Component {
                         Object.keys(this.state.favoriteGenres).map((genre)=>{
                             return(
                                 <div key={genre} className="genres">
-                                    <h4 style={{width: "20%", textAlign:"center"}}>{genre.split('_').join(' ').toUpperCase()}</h4>
+                                    <h4 className="genre-name">{genre.split('_').join(' ').toUpperCase()}</h4>
                                     <h4>{`${this.state.favoriteGenres[genre]}%`}</h4>
                                     <div className="progress">
                                         <div className="progress-bar" role="progressbar" style={{width: `${this.state.favoriteGenres[genre]}%`}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
