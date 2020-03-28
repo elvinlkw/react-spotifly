@@ -1,7 +1,7 @@
 {
-  "main.css": "/react-spotifly/static/css/main.469c5868.chunk.css",
-  "main.js": "/react-spotifly/static/js/main.aacf6373.chunk.js",
-  "main.js.map": "/react-spotifly/static/js/main.aacf6373.chunk.js.map",
+  "main.css": "/react-spotifly/static/css/main.fad6b5ce.chunk.css",
+  "main.js": "/react-spotifly/static/js/main.8fa82fc4.chunk.js",
+  "main.js.map": "/react-spotifly/static/js/main.8fa82fc4.chunk.js.map",
   "static/css/1.6178f7c7.chunk.css": "/react-spotifly/static/css/1.6178f7c7.chunk.css",
   "static/js/1.4918db72.chunk.js": "/react-spotifly/static/js/1.4918db72.chunk.js",
   "static/js/1.4918db72.chunk.js.map": "/react-spotifly/static/js/1.4918db72.chunk.js.map",
@@ -9,9 +9,9 @@
   "runtime~main.js.map": "/react-spotifly/static/js/runtime~main.143d840e.js.map",
   "static/media/react-logo.png": "/react-spotifly/static/media/react-logo.580ffd26.png",
   "static/media/font-awesome.min.css": "/react-spotifly/static/media/fontawesome-webfont.af7ae505.woff2",
-  "static/css/main.469c5868.chunk.css.map": "/react-spotifly/static/css/main.469c5868.chunk.css.map",
   "static/css/1.6178f7c7.chunk.css.map": "/react-spotifly/static/css/1.6178f7c7.chunk.css.map",
+  "static/css/main.fad6b5ce.chunk.css.map": "/react-spotifly/static/css/main.fad6b5ce.chunk.css.map",
   "index.html": "/react-spotifly/index.html",
-  "precache-manifest.c2bce07512dc1df6f3507138f0de2d46.js": "/react-spotifly/precache-manifest.c2bce07512dc1df6f3507138f0de2d46.js",
+  "precache-manifest.bed7812d5d9a6ed854d8526601d9b849.js": "/react-spotifly/precache-manifest.bed7812d5d9a6ed854d8526601d9b849.js",
   "service-worker.js": "/react-spotifly/service-worker.js"
 }
