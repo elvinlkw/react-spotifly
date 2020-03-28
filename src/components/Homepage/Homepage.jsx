@@ -176,8 +176,26 @@ class Homepage extends Component {
                         
                     </div>
                 </div>
+                {/* <div className="top-container">
+                    <div className="row">
+                        <div className="col-lg-6 col-push-6">
+                            <h4>{this.state.topArtist}</h4>
+                            <h6 style={{textDecoration: 'underline'}}>{`${this.state.topArtist} - ${this.state.topArtistTrack}`}</h6>
+                            {this.state.topPreviewLoaded && this.state.topArtistPreview && 
+                            <div>
+                                <audio src={this.state.topArtistPreview}></audio>
+                                <i onClick={()=>renderPlayPause(getPlayer())} className="fa fa-play fa-2x"></i>
+                            </div>}
+                            {!this.state.topArtistPreview && <p>No Preview Available</p>}
+                        </div>
+                        <div className="col-lg-6 col-pull-6">
+                            <h1 className="text-center">All Time Top Artist</h1>
+                            <img alt="Could Not Be Loaded" src={this.state.topArtistArtwork} className="img-artwork"/>
+                        </div>
+                    </div>
+                </div> */}
                 <div className="container-current-top">
-                    <div className="wrapper-top-preview">
+                    <div className="wrapper-top-preview" id="tp-artist-2">
                         <h4>{this.state.topArtist}</h4>
                         <h6 style={{textDecoration: 'underline'}}>{`${this.state.topArtist} - ${this.state.topArtistTrack}`}</h6>
                         {this.state.topPreviewLoaded && this.state.topArtistPreview && 
@@ -187,7 +205,7 @@ class Homepage extends Component {
                         </div>}
                         {!this.state.topArtistPreview && <p>No Preview Available</p>}
                     </div>
-                    <div className="wrapper-top-header">
+                    <div className="wrapper-top-header" id="tp-artist-1">
                         <h1 className="text-center">All Time Top Artist</h1>
                         <img alt="Could Not Be Loaded" src={this.state.topArtistArtwork} className="img-artwork"/>
                     </div>

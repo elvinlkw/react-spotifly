@@ -11,6 +11,11 @@
     cursor: pointer;
 }
 
+.top-container{
+    width: 70%;
+    margin: 0 auto;
+}
+
 .container img{
     display: block;
     margin: 0 auto;
@@ -70,4 +75,41 @@
 .img-artwork{
     box-shadow: 0 0 20px #000;
     width: 90%;
+}
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 828px) {
+
+    .container{
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    .container-current-top{
+        flex-direction: column;
+    }
+
+    .wrapper-top-header img{
+        width: 60%;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+
+    .wrapper-top-preview{
+        width: 100%;
+    }
+
+    .wrapper-top-preview h4{
+        font-size: 1.2rem;
+    }
+
+    #tp-artist-2{
+        order: 2;
+    }
+
+    #tp-artist-1{
+        order: 1;
+    }
+
 }
