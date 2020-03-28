@@ -2,3 +2,13 @@
     background: #fff;
     min-height: calc(100vh - 4rem);
 }
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 828px) {
+
+    .artist-list{
+        margin-left: 2rem;
+    }
+
+}

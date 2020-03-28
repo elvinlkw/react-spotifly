@@ -38,9 +38,9 @@ class ArtistsLong extends Component {
     }
     render() { 
         return (
-            <div className="col-4">
+            <div className="col-lg-4">
                 <p style={{fontWeight: 'bold'}}>Long Term (All Time)</p>
-                <ol>
+                <ol className="artist-list">
                     {this.state.dataValid && 
                     this.state.itemList.map((item)=>{
                         return (

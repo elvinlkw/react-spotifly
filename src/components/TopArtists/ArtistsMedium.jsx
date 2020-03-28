@@ -38,9 +38,9 @@ class ArtistsMedium extends Component {
     }
     render() { 
         return (
-            <div className="col-4">
+            <div className="col-lg-4">
                 <p style={{fontWeight: 'bold'}}>Medium Term (Approximately 6 Months)</p>
-                <ol>
+                <ol className="artist-list">
                     {this.state.dataValid && 
                     this.state.itemList.map((item)=>{
                         return (

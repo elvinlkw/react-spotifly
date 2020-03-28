@@ -94,7 +94,7 @@ class TracksMedium extends Component {
         return (
             <React.Fragment>
                 <div className="col-lg-4">
-                    <p style={{fontWeight: 'bold'}}>Short Term (4 weeks)</p>
+                    <p style={{fontWeight: 'bold'}}>6 Months</p>
                     <div className="track-container">
                         <ol>
                             {this.state.dataValid && this.state.itemList.map((item) => {

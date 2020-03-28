@@ -39,9 +39,9 @@ class ArtistsShort extends Component {
     }
     render() { 
         return (
-            <div className="col-4">
+            <div className="col-lg-4">
                 <p style={{fontWeight: 'bold'}}>Short Term (4 Weeks)</p>
-                <ol>
+                <ol className="artist-list">
                     {this.state.dataValid && 
                     this.state.itemList.map((item)=>{
                         return (
