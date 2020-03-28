@@ -1,12 +1,15 @@
 .navbar{
-    height: 4rem;
-    background-color: #2d2d2d;
+    /* height: 4rem; */
 }
 
 .nav-item a{
-    color: white;
+    color: #fff;
 }
 
 .nav-link{
-    color:white;
+    color:#fff;
+}
+
+.navbar-toggler-icon{
+    opacity: 0.5;
 }

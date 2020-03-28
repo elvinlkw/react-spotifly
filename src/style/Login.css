@@ -1,7 +1,15 @@
 .container-login{
-    padding: 4rem 0 0 20%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background: #fff;
     min-height: 100vh;
+}
+
+.container-login h5{
+    width: 27em;
 }
 
 #react-app{
@@ -9,13 +17,30 @@
 }
 
 .container-login a{
-    font-size: 3rem;
+    font-size: 3em;
 }
 
 button{
-    width: 10rem;
+    width: 10em;
 }
 
 button span{
     color:#000;
+}
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 812px) 
+and (-webkit-min-device-pixel-ratio: 3) { 
+
+    .container-login{
+        width: 100%;
+        margin-top: 2rem;
+        overflow: hidden;
+    }
+    
+    .container-login h5{
+        width: 80%;
+        font-size: 1rem;
+    }
 }
