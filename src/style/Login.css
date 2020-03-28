@@ -8,6 +8,10 @@
     min-height: 100vh;
 }
 
+.img-logo{
+    width: 20em;
+}
+
 .container-login h5{
     width: 27em;
 }
