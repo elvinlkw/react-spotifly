@@ -9,7 +9,8 @@ class TracksMedium extends Component {
             songFocus: false,
             image_src: '',
             track: '',
-            preview: ''
+            preview: '',
+            offset: 0
         }
         this.getTrackInfo = this.getTrackInfo.bind(this);
     }
@@ -40,6 +41,15 @@ class TracksMedium extends Component {
         }.bind(this));
 
         return tPromise;
+    }
+    displayNext(event, offset){
+        event.preventDefault();
+        var numOffset = this.state.offset + (offset * 20);
+        document.querySelector('.track-container ol').setAttribute("start", numOffset+1);
+
+        this.setState({
+            offset: numOffset
+        });
     }
     handleClick(key, song){
         this.setState({
@@ -97,7 +107,7 @@ class TracksMedium extends Component {
                     <p style={{fontWeight: 'bold'}}>6 Months</p>
                     <div className="track-container">
                         <ol>
-                            {this.state.dataValid && this.state.itemList.map((item) => {
+                            {this.state.dataValid && this.state.itemList.slice(this.state.offset, this.state.offset + 20).map((item) => {
                                 return (
                                     <li className="track-list" key={item.key} onClick={()=>this.handleClick(item.key, item.value)}>
                                         {` ${item.value}`}
@@ -105,6 +115,10 @@ class TracksMedium extends Component {
                                 )
                             })}
                         </ol>
+                        <div className="prev-next">
+                            {this.state.offset !== 0 && <input id="btn-prev" type="button" value="Prev" onClick={(e)=>this.displayNext(e, -1)}/>}
+                            {this.state.offset < (this.state.itemList.length-20) && <input id="btn-next" type="button" value="Next" onClick={(e)=>this.displayNext(e, 1)}/>}
+                        </div>
                     </div>
                 </div>
                 <div className="col-lg-8">

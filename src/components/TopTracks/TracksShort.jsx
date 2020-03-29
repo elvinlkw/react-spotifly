@@ -9,7 +9,8 @@ class TracksShort extends Component {
             songFocus: false,
             image_src: '',
             track: '',
-            preview: ''
+            preview: '',
+            offset: 0
         }
         this.getTrackInfo = this.getTrackInfo.bind(this);
     }
@@ -41,6 +42,16 @@ class TracksShort extends Component {
 
         return tPromise;
     }
+    displayNext(event, offset){
+        event.preventDefault();
+        var numOffset = this.state.offset + (offset * 20);
+
+        document.querySelector('.track-container ol').setAttribute("start", numOffset+1);
+
+        this.setState({
+            offset: numOffset
+        });
+    }
     handleClick(key, song){
         this.setState({
             songFocus: true,
@@ -54,17 +65,16 @@ class TracksShort extends Component {
         var tempArray = [];
         spotifyApi.getMyTopTracks({limit: 50, time_range: 'short_term'}).then((res) => {
             var promiseArray = [];
-
             for(let i = 0; i < res.items.length; i++){
                 promiseArray.push(this.getTrackInfo(i, res.items[i], tempArray))
             }
-
             Promise.all(promiseArray).then(function(){
                 return;
             });
 		}, (res) => {
 			alert('Error: Could Not Retrieve Data From Server');
 		}).then(()=>{
+            console.log(tempArray)
             spotifyApi.getMyTopTracks({limit:50, time_range: 'short_term', offset: '49'}).then((data)=>{
                 for(var i=1;i<data.items.length;i++){
                     var obj = {};
@@ -96,7 +106,7 @@ class TracksShort extends Component {
                     <p style={{fontWeight: 'bold'}}>Short Term (4 weeks)</p>
                     <div className="track-container">
                         <ol>
-                            {this.state.dataValid && this.state.itemList.map((item) => {
+                            {this.state.dataValid && this.state.itemList.slice(this.state.offset, this.state.offset + 20).map((item) => {
                                 return (
                                     <li className="track-list" key={item.key} onClick={()=>this.handleClick(item.key, item.value)}>
                                         {` ${item.value}`}
@@ -104,6 +114,10 @@ class TracksShort extends Component {
                                 )
                             })}
                         </ol>
+                        <div className="prev-next">
+                            {this.state.offset !== 0 && <input id="btn-prev" type="button" value="Prev" onClick={(e)=>this.displayNext(e, -1)}/>}
+                            {this.state.offset < (this.state.itemList.length-20) && <input id="btn-next" type="button" value="Next" onClick={(e)=>this.displayNext(e, 1)}/>}
+                        </div>
                     </div>
                 </div>
                 <div className="col-lg-8">

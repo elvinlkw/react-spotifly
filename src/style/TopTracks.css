@@ -1,5 +1,6 @@
 body{
     overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .top-track-container{
@@ -63,6 +64,14 @@ body{
 
 .image-container div audio:focus{
     outline: none;
+}
+
+.prev-next{
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 5em;
+    margin-bottom: 1em;
 }
 
 @media only screen
