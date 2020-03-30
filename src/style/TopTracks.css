@@ -69,8 +69,7 @@ body{
 .prev-next{
     margin: 0 auto;
     display: flex;
-    justify-content: flex-end;
-    padding-right: 5em;
+    justify-content: center;
     margin-bottom: 1em;
 }
 

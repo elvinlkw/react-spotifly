@@ -106,6 +106,10 @@ class TracksMedium extends Component {
                 <div className="col-lg-4">
                     <p style={{fontWeight: 'bold'}}>6 Months</p>
                     <div className="track-container">
+                        <div className="prev-next">
+                            {this.state.offset !== 0 && <input id="btn-prev" type="button" value="Prev" onClick={(e)=>this.displayNext(e, -1)}/>}
+                            {this.state.offset < (this.state.itemList.length-20) && <input id="btn-next" type="button" value="Next" onClick={(e)=>this.displayNext(e, 1)}/>}
+                        </div>
                         <ol>
                             {this.state.dataValid && this.state.itemList.slice(this.state.offset, this.state.offset + 20).map((item) => {
                                 return (
