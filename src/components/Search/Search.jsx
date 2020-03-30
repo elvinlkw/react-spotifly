@@ -25,20 +25,17 @@ class Search extends Component {
             searchCompleted: false,
             showTracklist: false,
             show: false,
-            currentlyPlaying: null
+            currentlyPlaying: null,
+            audioIndex: null,
+            isAudioPlaying: false
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleOption = this.handleOption.bind(this);
         this.hideModal = this.hideModal.bind(this);
-    }
-    componentDidUpdate(){
-        this.refs.searchText.focus();
+        this.playPreview = this.playPreview.bind(this);
     }
     componentDidMount(){
-        document.addEventListener('play', this.handlePause, true);
-    }
-    componentWillUnmount(){
-        document.removeEventListener('play', this.handlePause, true);
+        this.refs.searchText.focus();
     }
     sortArrayByDate(trackArray, sort){
         if(sort === 'date-desc'){
@@ -67,7 +64,6 @@ class Search extends Component {
             show: false,
             currentlyPlaying: null
         });
-        document.querySelector('audio').pause();
     }
     handleSubmit(e, sort){
         e.preventDefault();
@@ -95,6 +91,7 @@ class Search extends Component {
                         key_count++;
                     }
                 }
+                // Will display album by newest first
                 album = this.sortArrayByDate(album, 'date-desc');
 
                 // Code for Track Filtering
@@ -146,26 +143,14 @@ class Search extends Component {
 
         return tPromise;
     }
-    handlePause(e){
-        var audio_player = document.getElementsByClassName('track-preview');
-        var track_player = document.getElementsByClassName('album-preview');
-        for(let i = 0, len = audio_player.length; i < len;i++){
-            if(audio_player[i] !== e.target){
-                audio_player[i].pause();
-            }
-        }
-        for(let i = 0, len = track_player.length; i < len;i++){
-            if(track_player[i] !== e.target){
-                track_player[i].pause();
-                document.getElementsByTagName('i')[i].className = 'fa fa-play-circle';
-                document.getElementsByClassName('track-item')[i].style.color = "black";
-            }
-        }
-    }
     handleOption(event){
         var sort = event.target.value;
-        this.setState({selectedOption: event.target.value});
-        this.handleSubmit(event, sort);
+        var sortedTrack = this.sortArrayByDate(this.state.track, sort);
+        this.setState({
+            selectedOption: event.target.value,
+            track: sortedTrack
+        });
+
     }
     handleOpenTracklist(apiURL, releaseDate){
         var reformatedURL = `${apiURL}?access_token=${this.token}`;
@@ -206,6 +191,12 @@ class Search extends Component {
         var audio_player = document.querySelector('audio');
         var classlist = document.querySelectorAll('i')[player].className;
         var list_item = document.querySelectorAll('.track-item')[player];
+        if(this.state.audioIndex !== null){
+            document.querySelectorAll('.track-preview')[this.state.audioIndex].pause();
+            this.setState({
+                audioIndex: null
+            });
+        }
 
         if(this.state.currentlyPlaying !== null){
             // eslint-disable-next-line
@@ -238,23 +229,33 @@ class Search extends Component {
             list_item.style.color = "black";
         }
         document.getElementsByTagName('i')[player].className = classlist;
-
-
         this.setState({
             preview: preview,
-            currentlyPlaying: player
+            currentlyPlaying: player,
+            isAudioPlaying: true
         });
     }
-    render() {
-        var playPreview = (num, preview)=>{
-            if(!preview){
-                alert('No Preview Found.');
-            } else{
-                var audios = document.getElementsByTagName('audio');
-                audios[num].play();
-                audios[num].volume = 0.5;
+    playPreview(num, preview){
+        if(!preview){
+            alert('No Preview Found.');
+        } else{
+            var controls = document.createAttribute("controls");
+            var audios = document.querySelectorAll('.track-preview');
+            
+            if(this.state.audioIndex !== null && audios[num] !== this.state.audioIndex){
+                audios[this.state.audioIndex].pause();
+                audios[this.state.audioIndex].removeAttribute("controls");
             }
+
+            audios[num].play();
+            audios[num].setAttributeNode(controls);
+            this.setState({
+                audioIndex: num,
+                isAudioPlaying: true
+            });
         }
+    }
+    render() {
         return (
             <div className="search-container">
                 <h1 id="header" className="text-center">Search</h1>
@@ -292,7 +293,6 @@ class Search extends Component {
                                         )
                                     })}</ol>
                                 </div>
-                                {/* <button className="modal-close-button" onClick={this.hideModal}>X</button> */}
                                 <span><i className="fa fa-window-close modal-close-button" onClick={this.hideModal}></i></span>
                             </Modal>
                             {this.state.album.map((album)=>{
@@ -310,7 +310,7 @@ class Search extends Component {
                         <h1 className="text-center">Tracks</h1>
                         <div className="form-group">
                             <p>Sort By:</p>
-                            <select className="form-control" value={this.state.selectedOption} onChange={this.handleOption}>
+                            <select className="form-control" value={this.state.selectedOption} onChange={(e)=>this.handleOption(e)}>
                                 <option value="popularity">Popularity</option>
                                 <option value="date-desc">Newest First</option>
                                 <option value="date-asc">Oldest First</option>
@@ -319,16 +319,17 @@ class Search extends Component {
                         <div style={{position: 'relative', display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around', padding: '0 2rem'}}>
                         {this.state.track.map((track, index)=>{
                             return(
-                                <div key={index} style={{margin: '2rem 1rem'}}>
-                                    <audio className="track-preview" src={track.preview} />
-                                    <img className="image-artwork" onClick={()=>playPreview(index, track.preview)} alt="NoPreview" src={track.artwork}></img>
+                                <div key={index} className="tracks-track-container">
+                                    <img className="image-artwork" onClick={()=>this.playPreview(index, track.preview)} alt="NoPreview" src={track.artwork}></img>
                                     <h6 style={{paddingTop: '10px'}} className="text-center">{track.artist}</h6>
                                     <h6 className="text-center">{track.track}</h6>
+                                    <audio className="track-preview" src={track.preview} />
                                 </div>
                             )
                         })}</div>
                     </div>
                 </div>}
+                <audio src=""></audio>
                 {this.state.searchCompleted && this.state.track.length === 0 && 
                     <h1 className="text-center">No Result Found</h1>
                 }
