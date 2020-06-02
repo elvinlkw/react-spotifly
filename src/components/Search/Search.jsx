@@ -263,8 +263,6 @@ class Search extends Component {
     render() {
         var { loading } = this.state;
 
-        if(loading) return <Spinner />
-
         return (
             <div className="search-container">
                 <h1 id="header" className="text-center">Search</h1>
@@ -272,7 +270,7 @@ class Search extends Component {
                     <input placeholder="Search" type="text" className="form-control" ref="searchText"></input>
                     <button type="button" className="btn btn-info">Let's Get It!</button>
                 </form>
-                {/* {loading && <Spinner />} */}
+                {loading && <Spinner />}
                 {this.state.searchCompleted && this.state.track.length > 0 &&
                 <div className="search-result">
                     <div>
