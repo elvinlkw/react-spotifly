@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import Login from './Login';
 import Main from './Main';
 import Navbar from './Navbar';
@@ -24,16 +25,17 @@ class App extends Component {
     }
     render() { 
         return (
-            <div>
-                {!this.state.loggedIn && 
-                <Login/>}
-
-                {this.state.loggedIn &&
+            <Router>
                 <div>
-                    <Navbar token={this.authToken}/>
-                    <Main token={this.authToken}/>
-                </div>}
-            </div>
+                    {!this.state.loggedIn && 
+                    <Login/>}
+                    {this.state.loggedIn &&
+                    <div>
+                        <Navbar token={this.authToken}/>
+                        <Main token={this.authToken}/>
+                    </div>}
+                </div>
+            </Router>
         );
     }
 }
