@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import SpotifyApi from 'spotify-web-api-js';
-import './../../style/Search.css';
 import Modal from './Modal';
+import Spinner from '../Layout/Spinner';
+import './../../style/Search.css';
+
 const spotifyApi = new SpotifyApi();
 
 class Search extends Component {
@@ -27,7 +29,8 @@ class Search extends Component {
             show: false,
             currentlyPlaying: null,
             audioIndex: null,
-            isAudioPlaying: false
+            isAudioPlaying: false,
+            loading: false
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleOption = this.handleOption.bind(this);
@@ -68,8 +71,9 @@ class Search extends Component {
     handleSubmit(e, sort){
         e.preventDefault();
         this.setState({
-            searchCompleted: false
-        })
+            searchCompleted: false,
+            loading: true
+        });
         var input = this.refs.searchText.value;
         var track = [], album = [];
         if (input && input.length > 1){
@@ -104,7 +108,8 @@ class Search extends Component {
                     this.setState({
                         track: track,
                         album: album,
-                        searchCompleted: true
+                        searchCompleted: true,
+                        loading: false
                     });
                 }.bind(this));
             })            
@@ -256,6 +261,10 @@ class Search extends Component {
         }
     }
     render() {
+        var { loading } = this.state;
+
+        if(loading) return <Spinner />
+
         return (
             <div className="search-container">
                 <h1 id="header" className="text-center">Search</h1>
@@ -263,6 +272,7 @@ class Search extends Component {
                     <input placeholder="Search" type="text" className="form-control" ref="searchText"></input>
                     <button type="button" className="btn btn-info">Let's Get It!</button>
                 </form>
+                {/* {loading && <Spinner />} */}
                 {this.state.searchCompleted && this.state.track.length > 0 &&
                 <div className="search-result">
                     <div>
