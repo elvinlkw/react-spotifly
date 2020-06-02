@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/react-spotifly/static/media/fontawesome-webfont.af7ae505.woff2"
   },
   {
-    "revision": "c129ae668a19b0464736",
+    "revision": "ea00400607dd7d6bc852",
     "url": "/react-spotifly/static/css/main.323bff13.chunk.css"
   },
   {
@@ -24,27 +24,27 @@ self.__precacheManifest = [
     "url": "/react-spotifly/static/media/react-logo.580ffd26.png"
   },
   {
-    "revision": "c129ae668a19b0464736",
-    "url": "/react-spotifly/static/js/main.c129ae66.chunk.js"
+    "revision": "ea00400607dd7d6bc852",
+    "url": "/react-spotifly/static/js/main.ea004006.chunk.js"
   },
   {
     "revision": "fee66e712a8a08eef5805a46892932ad",
     "url": "/react-spotifly/static/media/fontawesome-webfont.fee66e71.woff"
   },
   {
-    "revision": "b06871f281fee6b241d60582ae9369b9",
-    "url": "/react-spotifly/static/media/fontawesome-webfont.b06871f2.ttf"
-  },
-  {
     "revision": "674f50d287a8c48dc19ba404d20fe713",
     "url": "/react-spotifly/static/media/fontawesome-webfont.674f50d2.eot"
+  },
+  {
+    "revision": "b06871f281fee6b241d60582ae9369b9",
+    "url": "/react-spotifly/static/media/fontawesome-webfont.b06871f2.ttf"
   },
   {
     "revision": "ec09c8915e984563d935",
     "url": "/react-spotifly/static/css/1.8d16a4f7.chunk.css"
   },
   {
-    "revision": "9fdcc5293fe0162c65c9d6d840458ce0",
+    "revision": "5b0f32d3fa985ea4a3d847c1dbc601af",
     "url": "/react-spotifly/index.html"
   }
 ];
