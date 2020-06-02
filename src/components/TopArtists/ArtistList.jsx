@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class ArtistsShort extends Component {
+export class ArtistList extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -9,9 +9,9 @@ class ArtistsShort extends Component {
         }
     }
     componentWillMount(){
-        var {spotifyApi} = this.props;
+        var { spotifyApi, term } = this.props;
         var tempArray = [];
-        spotifyApi.getMyTopArtists({limit: 50, time_range: 'short_term'}).then((res)=>{
+        spotifyApi.getMyTopArtists({limit: 50, time_range: term}).then((res)=>{
             for(var i = 0; i < res.items.length; i++){
                 var obj = {};
                 obj['key'] = i+1;
@@ -22,7 +22,7 @@ class ArtistsShort extends Component {
         }, (res) => {
             alert('Error: Data could not be fetched!');
         }).then(()=>{
-            spotifyApi.getMyTopArtists({limit:50, time_range: 'short_term', offset: '49'}).then((data)=>{
+            spotifyApi.getMyTopArtists({limit:50, time_range: term, offset: '49'}).then((data)=>{
                 for(var i=1; i<data.items.length; i++){
                     var obj = {};
                     obj['key'] = i+50;
@@ -32,27 +32,27 @@ class ArtistsShort extends Component {
                 this.setState({
                     itemList: tempArray,
                     dataValid: true
-                })
+                });
             });
         });
-        
     }
-    render() { 
+    render() {
+        var { term } = this.props;
+        var termHeader = term.substring(0, term.indexOf('_')).toUpperCase();
         return (
             <div className="col-lg-4">
-                <p style={{fontWeight: 'bold'}}>Short Term (4 Weeks)</p>
+                <p style={{fontWeight: 'bold', textAlign: 'center', paddingTop: '20px'}}>{termHeader} TERM</p>
                 <ol className="artist-list">
                     {this.state.dataValid && 
                     this.state.itemList.map((item)=>{
                         return (
                             <li key={item.key}>{item.value}</li>
                         )
-                    })
-                    }
+                    })}
                 </ol>
             </div>
-        );
+        )
     }
 }
 
-export default ArtistsShort;
+export default ArtistList
