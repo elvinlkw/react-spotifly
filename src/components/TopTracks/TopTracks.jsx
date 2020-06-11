@@ -46,7 +46,7 @@ class TopTracks extends Component {
         }.bind(this));
         return tPromise;
     }
-    displayTracklist(term){
+    fetchTracklist(term){
         var tempArray = [];
         spotifyApi.getMyTopTracks({ limit: 50, time_range: term })
             .then(res => {
@@ -86,14 +86,14 @@ class TopTracks extends Component {
     }
     componentWillMount(){
         this.setState({ loading: true });
-        this.displayTracklist('short_term');
+        this.fetchTracklist('short_term');
     }
     handleOption(e){
         this.setState({
             term: e.target.value,
             loading: true
         });
-        this.displayTracklist(e.target.value);
+        this.fetchTracklist(e.target.value);
     }
     render() { 
         var { term, tracklist, loading } = this.state;

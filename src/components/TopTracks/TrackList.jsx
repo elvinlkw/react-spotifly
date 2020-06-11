@@ -1,73 +1,77 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import Pagination from './Pagination';
+import TracksDisplay from './TracksDisplay';
 
 class TrackList extends Component {
     constructor(props){
         super(props);
         this.state = {
+            currentTrack: {
+                name: '',
+                preview: '',
+                image_src: ''
+            },
             songFocus: false,
-            image_src: '',
-            current_track: '',
-            preview: '',
-            offset: 0
+            currentPage: 1,
+            tracksPerPage: 20
         }
     }
-    displayNext(e, offset){
-        e.preventDefault();
-        var numOffset = this.state.offset + (offset * 20);
-
-        document.querySelector('.track-container ol').setAttribute("start", numOffset+1);
-
-        this.setState({
-            offset: numOffset
-        });
-    }
-    handleClick(key, song){
+    handleClick = (key, song) => {
         var { tracklist } = this.props;
+        var track = {
+            ...this.state.currentTrack,
+            name: song,
+            preview: tracklist[key].preview,
+            image_src: tracklist[key].image
+        }
         this.setState({ 
             songFocus: true,
-            image_src: tracklist[key].image,
-            preview: tracklist[key].preview,
-            current_track: song
+            currentTrack: track
         });
+    }
+    paginate = (event, number) => {
+        event.preventDefault();
+        this.setState({ currentPage: number });
     }
     render() { 
         var { 
-            offset, 
             songFocus,
-            current_track,
-            image_src,
-            preview
+            currentPage,
+            tracksPerPage,
+            currentTrack
         } = this.state;
         var { term, tracklist } = this.props;
         // Display period of the fetch
-        var termHeader = term.substring(0, term.indexOf('_')).toUpperCase();
+        var termHeader = term.substring(0, term.indexOf('_'));
+
+        // Retrieving Pagination Indexes
+        var indexOfLastPage = currentPage * tracksPerPage;
+        var indexOfFirstPage = indexOfLastPage - tracksPerPage;
+        var currentTracks = tracklist.slice(indexOfFirstPage, indexOfLastPage);
         return (
             <React.Fragment>
                 <div className="col-lg-4">
-                    <p style={{fontWeight: 'bold', textAlign: 'center'}}>{termHeader} TERM</p>
+                    <p style={{fontWeight: 'bold', textAlign: 'center', textTransform: 'capitalize'}}>{termHeader} term</p>
                     <div className="track-container">
-                        <div className="prev-next">
-                            {offset !== 0 && <input id="btn-prev" type="button" value="Prev" onClick={(e)=>this.displayNext(e, -1)}/>}
-                            {offset < (tracklist.length-20) && <input id="btn-next" type="button" value="Next" onClick={(e)=>this.displayNext(e, 1)}/>}
-                        </div>
-                        <ol>
-                            {tracklist && tracklist.slice(offset, offset + 20).map((track) => {
-                                return (
-                                    <li className="track-list" key={track.key} onClick={()=>this.handleClick(track.key, track.value)}>
-                                        {` ${track.value}`}
-                                    </li>
-                                )
-                            })}
-                        </ol>
+                        <TracksDisplay 
+                            indexOfFirstPage={indexOfFirstPage}
+                            currentTracks={currentTracks}
+                            handleClick={this.handleClick}
+                        />
+                        <Pagination 
+                            totalTracks={tracklist.length} 
+                            tracksPerPage={tracksPerPage} 
+                            paginate={this.paginate}
+                        />
                     </div>
                 </div>
                 <div className="col-lg-8">
-                    {tracklist && songFocus &&
+                    {songFocus &&
                     <div className="image-container">
-                        <img className="track-img" src={image_src} alt="" />
+                        <img className="track-img" src={currentTrack.image_src} alt="" />
                         <div>
-                            <p>{current_track}</p>
-                            <audio controls autoPlay src={preview}></audio>
+                            <p>{currentTrack.name}</p>
+                            <audio controls autoPlay src={currentTrack.preview}></audio>
                         </div>
                     </div>}
                 </div>
