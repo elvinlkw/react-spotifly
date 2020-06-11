@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Pagination from './Pagination';
 import TracksDisplay from './TracksDisplay';
+import TrackControl from './TrackControl';
 
 class TrackList extends Component {
     constructor(props){
@@ -19,7 +20,6 @@ class TrackList extends Component {
     handleClick = (key, song) => {
         var { tracklist } = this.props;
         var track = {
-            ...this.state.currentTrack,
             name: song,
             preview: tracklist[key].preview,
             image_src: tracklist[key].image
@@ -38,13 +38,10 @@ class TrackList extends Component {
             songFocus,
             currentPage,
             tracksPerPage,
-            currentTrack: { 
-                name, 
-                preview, 
-                image_src 
-            }
+            currentTrack
         } = this.state;
         var { term, tracklist } = this.props;
+
         // Display period of the fetch
         var termHeader = term.substring(0, term.indexOf('_'));
 
@@ -52,6 +49,7 @@ class TrackList extends Component {
         var indexOfLastPage = currentPage * tracksPerPage;
         var indexOfFirstPage = indexOfLastPage - tracksPerPage;
         var currentTracks = tracklist.slice(indexOfFirstPage, indexOfLastPage);
+        
         return (
             <React.Fragment>
                 <div className="col-lg-4">
@@ -60,7 +58,7 @@ class TrackList extends Component {
                         <TracksDisplay 
                             indexOfFirstPage={indexOfFirstPage}
                             currentTracks={currentTracks}
-                            handleClick={this.handleClick}
+                            onclick={this.handleClick}
                         />
                         <Pagination 
                             totalTracks={tracklist.length} 
@@ -69,16 +67,10 @@ class TrackList extends Component {
                         />
                     </div>
                 </div>
-                <div className="col-lg-8">
-                    {songFocus &&
-                    <div className="image-container">
-                        <img className="track-img" src={image_src} alt="" />
-                        <div>
-                            <p>{name}</p>
-                            <audio controls autoPlay src={preview}></audio>
-                        </div>
-                    </div>}
-                </div>
+                <TrackControl 
+                    songFocus={songFocus}
+                    currentTrack={currentTrack}
+                />
             </React.Fragment>
         );
     }

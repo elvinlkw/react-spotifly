@@ -8,6 +8,7 @@ class Pagination extends Component {
     for(var i = 1; i <= Math.ceil(totalTracks / tracksPerPage); i++){
       pageNumber.push(i);
     }
+    
     return (
       <nav style={paginationStyle}>
         <ul className="pagination">
