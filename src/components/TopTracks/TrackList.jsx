@@ -38,7 +38,11 @@ class TrackList extends Component {
             songFocus,
             currentPage,
             tracksPerPage,
-            currentTrack
+            currentTrack: { 
+                name, 
+                preview, 
+                image_src 
+            }
         } = this.state;
         var { term, tracklist } = this.props;
         // Display period of the fetch
@@ -68,10 +72,10 @@ class TrackList extends Component {
                 <div className="col-lg-8">
                     {songFocus &&
                     <div className="image-container">
-                        <img className="track-img" src={currentTrack.image_src} alt="" />
+                        <img className="track-img" src={image_src} alt="" />
                         <div>
-                            <p>{currentTrack.name}</p>
-                            <audio controls autoPlay src={currentTrack.preview}></audio>
+                            <p>{name}</p>
+                            <audio controls autoPlay src={preview}></audio>
                         </div>
                     </div>}
                 </div>
