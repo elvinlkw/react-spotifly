@@ -1,0 +1,16 @@
+.SearchForm {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.SearchForm input {
+  width: 20rem!important;
+  margin-bottom: 10px;
+}
+
+.SearchForm button{
+  width: 20rem;
+}

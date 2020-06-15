@@ -1,0 +1,40 @@
+.AlbumTracklist img {
+  border-radius: 10px;
+  margin: 1rem;
+  width: 80%;
+}
+
+.AlbumTracklist .description {
+  margin-left: 1rem;
+}
+
+.AlbumTracklist h2,
+.AlbumTracklist p {
+  margin: 0
+}
+
+.AlbumTracklist audio {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.AlbumTracklist li{
+  cursor: pointer;
+}
+
+.AlbumTracklist i{
+  margin-right: 9px;
+  opacity: 0;
+}
+
+.AlbumTracklist li:hover i {
+  opacity: 1;
+}
+
+.Hide{
+  opacity: 0;
+}
+
+.Block{
+  opacity: 1;
+}

@@ -1,0 +1,35 @@
+.AlbumDisplay {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.AlbumDisplay div{
+  padding: 0 2rem;
+  margin-bottom: 2rem;
+}
+
+.AlbumDisplay img{
+  border-radius: 10px;
+  margin: 7px;
+  box-shadow: 0 0 20px #000;
+  cursor: pointer;
+}
+
+.AlbumDisplay img:hover {
+  opacity: 0.8;
+}
+
+.AlbumDisplay h6{
+  text-align: center;
+  width: 300px;
+}
+
+.AlbumHeader{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
