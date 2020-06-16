@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import withToast from '../../hoc/withToast';
 import SearchForm from './SearchForm';
 import Spinner from '../Layout/Spinner';
 import ArtworkDisplay from './ArtworkDisplay';
@@ -29,11 +30,17 @@ class Search2 extends Component {
       albumTracklist: {},
       displayModal: false,
       searchCompleted: false,
-      isPlaying: false
+      isPlaying: false,
+      toast: {
+        status: false,
+        appearance: 'info',
+        message: ''
+      }
     }
   }
   fetchData = async () => {
-    const res = await axios.get('https://api.spotify.com/v1/search', {
+    try {
+      const res = await axios.get('https://api.spotify.com/v1/search', {
       params: {
         q: this.state.searchText,
         type: this.state.queryParams.type,
@@ -60,8 +67,7 @@ class Search2 extends Component {
         albumList.push(store);
       }
     }
-    // Sort album list by newest first
-    albumList = this.sortList(albumList);
+    
 
     // Storing Tracks
     for(let i = 0; i < data.tracks.items.length; i++){
@@ -81,14 +87,31 @@ class Search2 extends Component {
       trackList.push(store);
     }
 
-    trackList = this.sortList(trackList, 'popular');
+    if(albumList.length === 0 && trackList.length === 0){
+      this.props.addToast(`No Results Found`, {
+        appearance: 'warning',
+        autoDismiss: true
+      });
+    } else {
+      // Sort album list by newest first
+      albumList = this.sortList(albumList);
+      trackList = this.sortList(trackList, 'popular');
+    }
 
     this.setState({ 
       albumList,
       trackList,
       loading: false
     });
+    } catch (error) {
+      this.props.addToast(`${error.response.status}: ${error.response.data.error.message}`, {
+        appearance: 'error',
+        autoDismiss: true
+      });
+      this.setState({ loading: false });
+    }
   }
+  // function that sort list according to Select option
   sortList = (list, sortOption) => {
     switch(sortOption){
       case 'oldest':
@@ -105,15 +128,18 @@ class Search2 extends Component {
         });
     }
   }
+  // function that handle clicking on Search button
   handleSearch = (e) => {
     e.preventDefault();
     let header = this.state.header;
-    this.setState({ loading: true });
-
     if(this.state.searchText.length < 1){
-      alert('Search is empty')
+      this.props.addToast('Search Field is Empty', {
+          appearance: 'info',
+          autoDismiss: true
+      })
     } else {
       header = `Results: ${this.state.searchText}`;
+      this.setState({ loading: true });
       this.fetchData();
     }
     this.setState({ 
@@ -128,7 +154,10 @@ class Search2 extends Component {
       });
       return res.data.preview_url;
     } catch (error) {
-      alert(error);
+      this.props.addToast(`${error.response.status}: ${error.response.data.error.message}`, {
+        appearance: 'error',
+        autoDismiss: true
+      });
     }
   }
   fetchTracklist = async (index) => {
@@ -157,9 +186,16 @@ class Search2 extends Component {
         artist: res.data.artists[0].name
       }
 
-      this.setState({ albumTracklist: albumTracklist, searchCompleted: true, modalLoading: false });
-    } catch (err) {
-      alert(err);
+      this.setState({ 
+        albumTracklist,
+        searchCompleted: true, 
+        modalLoading: false 
+      });
+    } catch (error) {
+      this.props.addToast(`${error.response.status}: ${error.response.data.error.message}`, {
+        appearance: 'error',
+        autoDismiss: true
+      });
     }
   }
   handleAlbumClick = (index) => {
@@ -182,7 +218,17 @@ class Search2 extends Component {
   handleCloseModal = () =>  this.setState({ displayModal: false, isPlaying: false }) 
   
   render() {
-    const { loading, header, albumList, trackList, displayModal, albumTracklist, audio_src, modalLoading, selected_option } = this.state;
+    const { 
+      loading, 
+      header, 
+      albumList, 
+      trackList, 
+      displayModal, 
+      albumTracklist, 
+      audio_src, 
+      modalLoading, 
+      selected_option, 
+    } = this.state;
     
     // Displays loading icon when fetching tracks and albums
     const loadSpinner = loading ? <Spinner /> : null;
@@ -190,14 +236,25 @@ class Search2 extends Component {
     // Render Album List Component on DOM
     const loadAlbumList = () => {
       if(!loading && albumList.length > 0) {
-        return <ArtworkDisplay albumList={albumList} onAlbumClick={this.handleAlbumClick} header="Albums"/>
+        return (
+          <ArtworkDisplay 
+            header="Albums"
+            albumList={albumList} 
+            onAlbumClick={this.handleAlbumClick}/>
+        )
       }
     }
-
     // Render Track List Component on DOM
     const loadTrackList = () => {
       if(!loading && trackList.length > 0){
-        return <ArtworkDisplay albumList={trackList} selected={selected_option} onAlbumClick={this.handleTrackClick} onchange={this.handleOptionChange} header="Tracks"/>
+        return( 
+          <ArtworkDisplay 
+            header="Tracks"
+            albumList={trackList} 
+            selected={selected_option} 
+            onAlbumClick={this.handleTrackClick} 
+            onchange={this.handleOptionChange}/>
+        )
       }
     }
     return (
@@ -216,4 +273,4 @@ class Search2 extends Component {
   }
 }
 
-export default Search2
+export default withToast(Search2);

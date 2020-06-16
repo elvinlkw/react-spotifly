@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import withToast from '../../hoc/withToast';
 import classes from './style/AlbumTracklist.module.css';
 import Spinner from '../Layout/Spinner';
 
-const AlbumTracklist = ({ albumTracklist : { tracklist, release_date, album, artwork, artist }, isPlaying, loading, displayModal }) => {
+const AlbumTracklist = ({ albumTracklist: { tracklist, release_date, album, artwork, artist }, isPlaying, loading, displayModal, addToast }) => {
   // Instantiate states
   let [ preview, setPreview ] = useState('');  // preview_href
   let [ currentTrack, setCurrentTrack ] = useState('');  // 
@@ -16,7 +17,10 @@ const AlbumTracklist = ({ albumTracklist : { tracklist, release_date, album, art
 
   const playPreview = ( index, preview_url ) => {
     if(preview_url === null){
-      alert('No Previews Found');
+      addToast('No Previews Found', {
+        appearance: 'warning',
+        autoDismiss: true
+      })
     }else{ 
       const string = `${artist} - ${tracklist[index].name}`
       setPreview(preview_url);
@@ -57,4 +61,4 @@ const AlbumTracklist = ({ albumTracklist : { tracklist, release_date, album, art
   )
 }
 
-export default AlbumTracklist
+export default withToast(AlbumTracklist);
