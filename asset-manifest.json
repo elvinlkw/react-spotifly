@@ -1,17 +1,27 @@
 {
-  "main.css": "/react-spotifly/static/css/main.3f9cfa70.chunk.css",
-  "main.js": "/react-spotifly/static/js/main.127452e9.chunk.js",
-  "main.js.map": "/react-spotifly/static/js/main.127452e9.chunk.js.map",
-  "static/css/1.bd34139c.chunk.css": "/react-spotifly/static/css/1.bd34139c.chunk.css",
-  "static/js/1.d0179f98.chunk.js": "/react-spotifly/static/js/1.d0179f98.chunk.js",
-  "static/js/1.d0179f98.chunk.js.map": "/react-spotifly/static/js/1.d0179f98.chunk.js.map",
-  "runtime~main.js": "/react-spotifly/static/js/runtime~main.143d840e.js",
-  "runtime~main.js.map": "/react-spotifly/static/js/runtime~main.143d840e.js.map",
-  "static/media/react-logo.png": "/react-spotifly/static/media/react-logo.580ffd26.png",
-  "static/media/font-awesome.min.css": "/react-spotifly/static/media/fontawesome-webfont.af7ae505.woff2",
-  "static/css/main.3f9cfa70.chunk.css.map": "/react-spotifly/static/css/main.3f9cfa70.chunk.css.map",
-  "static/css/1.bd34139c.chunk.css.map": "/react-spotifly/static/css/1.bd34139c.chunk.css.map",
-  "index.html": "/react-spotifly/index.html",
-  "precache-manifest.e4394240306c3a6f0a0ae640c2c28e13.js": "/react-spotifly/precache-manifest.e4394240306c3a6f0a0ae640c2c28e13.js",
-  "service-worker.js": "/react-spotifly/service-worker.js"
+  "files": {
+    "main.css": "/react-spotifly/static/css/main.dde5b395.chunk.css",
+    "main.js": "/react-spotifly/static/js/main.ef6adfbb.chunk.js",
+    "main.js.map": "/react-spotifly/static/js/main.ef6adfbb.chunk.js.map",
+    "runtime-main.js": "/react-spotifly/static/js/runtime-main.d6dc61aa.js",
+    "runtime-main.js.map": "/react-spotifly/static/js/runtime-main.d6dc61aa.js.map",
+    "static/css/2.6704fd9a.chunk.css": "/react-spotifly/static/css/2.6704fd9a.chunk.css",
+    "static/js/2.70b216f6.chunk.js": "/react-spotifly/static/js/2.70b216f6.chunk.js",
+    "static/js/2.70b216f6.chunk.js.map": "/react-spotifly/static/js/2.70b216f6.chunk.js.map",
+    "index.html": "/react-spotifly/index.html",
+    "precache-manifest.a83c89def768a3c18a915f3d13d512ee.js": "/react-spotifly/precache-manifest.a83c89def768a3c18a915f3d13d512ee.js",
+    "service-worker.js": "/react-spotifly/service-worker.js",
+    "static/css/2.6704fd9a.chunk.css.map": "/react-spotifly/static/css/2.6704fd9a.chunk.css.map",
+    "static/css/main.dde5b395.chunk.css.map": "/react-spotifly/static/css/main.dde5b395.chunk.css.map",
+    "static/js/2.70b216f6.chunk.js.LICENSE.txt": "/react-spotifly/static/js/2.70b216f6.chunk.js.LICENSE.txt",
+    "static/media/font-awesome.min.css": "/react-spotifly/static/media/fontawesome-webfont.fee66e71.woff",
+    "static/media/react-logo.png": "/react-spotifly/static/media/react-logo.580ffd26.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d6dc61aa.js",
+    "static/css/2.6704fd9a.chunk.css",
+    "static/js/2.70b216f6.chunk.js",
+    "static/css/main.dde5b395.chunk.css",
+    "static/js/main.ef6adfbb.chunk.js"
+  ]
 }
