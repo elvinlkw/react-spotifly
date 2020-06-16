@@ -33,7 +33,7 @@ const AlbumTracklist = ({ albumTracklist: { tracklist, release_date, album, artw
 
   return (
     <div className={`row ${classes.AlbumTracklist}`}>
-      <div className="col-4">
+      <div className="col-md-4">
         <img src={artwork} alt="No Previews Found"/>
         <div className={classes.description}>
           <h2>{album}</h2>
@@ -45,7 +45,7 @@ const AlbumTracklist = ({ albumTracklist: { tracklist, release_date, album, artw
           <p className="text-center">{currentTrack}</p>
         </div>
       </div>
-      <div className="col-8">
+      <div className="col-md-8">
         <h2 style={{marginBottom: '1rem'}}>{album} Tracklist</h2>
         <ol>
           {tracklist.map((track, index) => {
