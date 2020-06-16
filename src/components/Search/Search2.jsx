@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import withToast from '../../hoc/withToast';
 import SearchForm from './SearchForm';
+import SearchFilter from './SearchFilter';
 import Spinner from '../Layout/Spinner';
 import ArtworkDisplay from './ArtworkDisplay';
 import AlbumTracklist from './AlbumTracklist';
@@ -31,20 +32,31 @@ class Search2 extends Component {
       displayModal: false,
       searchCompleted: false,
       isPlaying: false,
-      toast: {
-        status: false,
-        appearance: 'info',
-        message: ''
+      inputFilter:{
+        limit: 50,
+        album: true,
+        track: true
       }
     }
   }
   fetchData = async () => {
+    const { inputFilter } = this.state;
+    let type = '';
+    if(inputFilter.album && inputFilter.track) type = 'track,album';
+    else if (inputFilter.album && !inputFilter.track) type = 'album';
+    else if (!inputFilter.album && inputFilter.track) type = 'track';
+    else {
+      this.props.addToast('Nothing selected', {
+        appearance: 'error',
+        autoDismiss: true
+      })
+    }
     try {
       const res = await axios.get('https://api.spotify.com/v1/search', {
       params: {
         q: this.state.searchText,
-        type: this.state.queryParams.type,
-        limit: this.state.queryParams.limit,
+        type: type,
+        limit: this.state.inputFilter.limit,
       },
       headers: { 'Authorization' : `Bearer ${this.token}` }
     });
@@ -52,39 +64,42 @@ class Search2 extends Component {
     let albumList = [];
     let trackList = [];
     const data = res.data;
-    // Storing Albums
-    for(let i = 0; i < data.albums.items.length; i++){
-      let albumData = data.albums.items[i];
-      // Check if album type is 'album'
-      if(albumData.album_type === 'album'){
-        let store = {
-          name: albumData.name,
-          artwork: albumData.images[1].url,
-          artist: albumData.artists[0].name,
-          album_href: albumData.href,
-          release_date: albumData.release_date
+    if(inputFilter.album){
+      // Storing Albums
+      for(let i = 0; i < data.albums.items.length; i++){
+        let albumData = data.albums.items[i];
+        // Check if album type is 'album'
+        if(albumData.album_type === 'album'){
+          let store = {
+            name: albumData.name,
+            artwork: albumData.images[1].url,
+            artist: albumData.artists[0].name,
+            album_href: albumData.href,
+            release_date: albumData.release_date
+          }
+          albumList.push(store);
         }
-        albumList.push(store);
       }
     }
-    
 
-    // Storing Tracks
-    for(let i = 0; i < data.tracks.items.length; i++){
-      let trackData = data.tracks.items[i];
-      let store = {
-        name: trackData.name,
-        artist: trackData.artists[0].name,
-        track_preview: trackData.preview_url,
-        track_href: trackData.href,
-        artwork: trackData.album.images[1].url,
-        release_date: trackData.album.release_date,
-        popularity: trackData.popularity
+    if (inputFilter.track){
+      // Storing Tracks
+      for(let i = 0; i < data.tracks.items.length; i++){
+        let trackData = data.tracks.items[i];
+        let store = {
+          name: trackData.name,
+          artist: trackData.artists[0].name,
+          track_preview: trackData.preview_url,
+          track_href: trackData.href,
+          artwork: trackData.album.images[1].url,
+          release_date: trackData.album.release_date,
+          popularity: trackData.popularity
+        }
+        if(store.track_preview === null){
+          store.track_preview = await this.getPreview(store.track_href);
+        }
+        trackList.push(store);
       }
-      if(store.track_preview === null){
-        store.track_preview = await this.getPreview(store.track_href);
-      }
-      trackList.push(store);
     }
 
     if(albumList.length === 0 && trackList.length === 0){
@@ -211,7 +226,50 @@ class Search2 extends Component {
   }
   handleOptionChange = (option) => {
     const sortedList = this.sortList(this.state.trackList, option);
-    this.setState({ trackList: sortedList });
+    this.setState({ 
+      trackList: sortedList,
+      selected_option: option
+    });
+  }
+  handleCheckbox = (e) => {
+    // Calling event.persist() on the event removes the synthetic event
+    // from the pool and allows references to the event to be 
+    // retained asynchronously
+    e.persist();
+    if(e.target.name === 'album'){
+      this.setState( prevState => {
+        return {
+          ...prevState,
+          inputFilter: {
+            album: !prevState.inputFilter.album,
+            track: prevState.inputFilter.track,
+            limit: prevState.inputFilter.limit
+          }
+        }
+      });
+    } else if (e.target.name === 'track') {
+      this.setState( prevState => {
+        return {
+          ...prevState,
+          inputFilter: {
+            album: prevState.inputFilter.album,
+            track: !prevState.inputFilter.track,
+            limit: prevState.inputFilter.limit
+          }
+        }
+      });
+    } else {
+      this.setState( prevState => {
+        return {
+          ...prevState,
+          inputFilter: {
+            album: prevState.inputFilter.album,
+            track: prevState.inputFilter.track,
+            limit: e.target.value
+          }
+        }
+      })
+    }
   }
 
   handlePlayingStatus = isPlaying => this.setState({ isPlaying });
@@ -228,6 +286,7 @@ class Search2 extends Component {
       audio_src, 
       modalLoading, 
       selected_option, 
+      inputFilter
     } = this.state;
     
     // Displays loading icon when fetching tracks and albums
@@ -265,6 +324,7 @@ class Search2 extends Component {
         </Modal>
         <h1 className="text-center" style={{textTransform: 'capitalize'}}>{header}</h1>
         <SearchForm onSearch={this.handleSearch} onChange={(e) => this.setState({ searchText: e.target.value })}/>
+        <SearchFilter onchange={this.handleCheckbox} filter={inputFilter}/>
         {loadSpinner}
         {loadAlbumList()}
         {loadTrackList()}

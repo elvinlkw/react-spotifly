@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from './style/SearchForm.module.css';
 
-const SearchForm = ({ searchText, onSearch, onChange }) => {
+const SearchForm = ({ onSearch, onChange }) => {
   return (
     <form className={classes.SearchForm} onSubmit={onSearch}>
       <input type="text" className="form-control" placeholder="Search" onChange={onChange} />

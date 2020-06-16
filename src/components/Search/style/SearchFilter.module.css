@@ -1,0 +1,29 @@
+.SearchFilter {
+  width: 80%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.CardBody {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 20rem;
+}
+
+.CardBody input[type=text] {
+  width: 2.5rem;
+  margin-left: 0.5rem;
+}
+
+.CardBody div {
+  display: flex;
+  flex-direction: column;
+}
+
+.CardBody input[type=checkbox] {
+  margin-right: 0.5rem;
+}
