@@ -25,7 +25,7 @@ const AlbumTracklist = ({ albumTracklist: { tracklist, release_date, album, artw
       const string = `${artist} - ${tracklist[index].name}`
       setPreview(preview_url);
       setCurrentTrack(string);
-      isPlaying(true);
+      isPlaying();
     }
   }
 
@@ -45,7 +45,7 @@ const AlbumTracklist = ({ albumTracklist: { tracklist, release_date, album, artw
           <p className="text-center">{currentTrack}</p>
         </div>
       </div>
-      <div className="col-md-8">
+      <div className={`col-md-8 ${classes.TrackListContainer}`}>
         <h2 style={{marginBottom: '1rem'}}>{album} Tracklist</h2>
         <ol>
           {tracklist.map((track, index) => {

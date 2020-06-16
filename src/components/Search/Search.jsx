@@ -1,349 +1,334 @@
 import React, { Component } from 'react';
-import SpotifyApi from 'spotify-web-api-js';
-import Modal from './Modal';
+import withToast from '../../hoc/withToast';
+import SearchForm from './SearchForm';
+import SearchFilter from './SearchFilter';
 import Spinner from '../Layout/Spinner';
-import './../../style/Search.css';
+import ArtworkDisplay from './ArtworkDisplay';
+import AlbumTracklist from './AlbumTracklist';
+import Modal from './Modal';
+import axios from 'axios';
 
-const spotifyApi = new SpotifyApi();
+class Search2 extends Component {
+  constructor(props){
+    super(props);
+    let url = window.location.href;
+    if(url.indexOf("token=") > -1){ 
+        this.token = url.split("token=")[1].split("&")[0].trim();
+    }
+    this.state = {
+      loading: false,
+      modalLoading: false,
+      searchText: '',
+      header: 'Search',
+      audio_src: '',
+      selected_option: 'popular',
+      queryParams: {
+        type: 'track,album',
+        limit: 50
+      },
+      albumList: [],
+      trackList: [],
+      albumTracklist: {},
+      displayModal: false,
+      searchCompleted: false,
+      inputFilter:{
+        limit: 50,
+        album: true,
+        track: true
+      }
+    }
+  }
+  fetchData = async () => {
+    const { inputFilter } = this.state;
+    let type = '';
+    if(inputFilter.album && inputFilter.track) type = 'track,album';
+    else if (inputFilter.album && !inputFilter.track) type = 'album';
+    else if (!inputFilter.album && inputFilter.track) type = 'track';
+    else {
+      this.props.addToast('Nothing selected', {
+        appearance: 'error',
+        autoDismiss: true
+      })
+    }
+    try {
+      const res = await axios.get('https://api.spotify.com/v1/search', {
+      params: {
+        q: this.state.searchText,
+        type: type,
+        limit: this.state.inputFilter.limit,
+      },
+      headers: { 'Authorization' : `Bearer ${this.token}` }
+    });
+    
+    let albumList = [];
+    let trackList = [];
+    const data = res.data;
+    if(inputFilter.album){
+      // Storing Albums
+      for(let i = 0; i < data.albums.items.length; i++){
+        let albumData = data.albums.items[i];
+        // Check if album type is 'album'
+        if(albumData.album_type === 'album'){
+          let store = {
+            name: albumData.name,
+            artwork: albumData.images[1].url,
+            artist: albumData.artists[0].name,
+            album_href: albumData.href,
+            release_date: albumData.release_date
+          }
+          albumList.push(store);
+        }
+      }
+    }
 
-class Search extends Component {
-    constructor(){
-        super();
-        let url = window.location.href;
-        if(url.indexOf("token=") > -1){ 
-            this.token = url.split("token=")[1].split("&")[0].trim();
+    if (inputFilter.track){
+      // Storing Tracks
+      for(let i = 0; i < data.tracks.items.length; i++){
+        let trackData = data.tracks.items[i];
+        let store = {
+          name: trackData.name,
+          artist: trackData.artists[0].name,
+          track_preview: trackData.preview_url,
+          track_href: trackData.href,
+          artwork: trackData.album.images[1].url,
+          release_date: trackData.album.release_date,
+          popularity: trackData.popularity
         }
-        spotifyApi.setAccessToken(this.token);
-        this.state = {
-            track: [],
-            album: [],
-            tracklist: [],
-            trackArtist: [],
-            albumArtwork: '',
-            releaseDate: '',
-            duration: '',
-            preview: '',
-            selectedOption: 'popularity',
-            searchCompleted: false,
-            showTracklist: false,
-            show: false,
-            currentlyPlaying: null,
-            audioIndex: null,
-            isAudioPlaying: false,
-            loading: false
+        if(store.track_preview === null){
+          store.track_preview = await this.getPreview(store.track_href);
         }
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleOption = this.handleOption.bind(this);
-        this.hideModal = this.hideModal.bind(this);
-        this.playPreview = this.playPreview.bind(this);
+        trackList.push(store);
+      }
     }
-    componentDidMount(){
-        this.refs.searchText.focus();
+
+    if(albumList.length === 0 && trackList.length === 0){
+      this.props.addToast(`No Results Found`, {
+        appearance: 'warning',
+        autoDismiss: true
+      });
+    } else {
+      // Sort album list by newest first
+      albumList = this.sortList(albumList);
+      trackList = this.sortList(trackList, 'popular');
     }
-    sortArrayByDate(trackArray, sort){
-        if(sort === 'date-desc'){
-            trackArray.sort((a, b)=>{
-                return new Date(b.release_date) - new Date(a.release_date)
-            });
-        } else if(sort === 'date-asc'){
-            trackArray.sort((a, b)=>{
-                return new Date(a.release_date) - new Date(b.release_date)
-            });
-        } else{
-            trackArray.sort((a,b)=>{
-                return b.popularity - a.popularity;
-            });
-        }
-        for(var i=0; i<trackArray.length; i++){
-            trackArray[i].key = i
-        }
-        return trackArray;
+
+    this.setState({ 
+      albumList,
+      trackList,
+      loading: false
+    });
+    } catch (error) {
+      this.props.addToast(`${error.response.status}: ${error.response.data.error.message}`, {
+        appearance: 'error',
+        autoDismiss: true
+      });
+      this.setState({ loading: false });
     }
-    hideModal(e){
-        e.preventDefault();
-        this.setState({
-            tracklist: [],
-            preview: '',
-            show: false,
-            currentlyPlaying: null
+  }
+  // function that sort list according to Select option
+  sortList = (list, sortOption) => {
+    switch(sortOption){
+      case 'oldest':
+        return list.sort((a, b) => {
+          return new Date(a.release_date) - new Date(b.release_date);
+        });
+      case 'popular':
+        return list.sort((a, b) => {
+          return b.popularity - a.popularity;
+        })
+      default:
+        return list.sort((a, b) => {
+          return new Date(b.release_date) - new Date(a.release_date);
         });
     }
-    handleSubmit(e, sort){
-        e.preventDefault();
-        this.setState({
-            searchCompleted: false,
-            loading: true
-        });
-        var input = this.refs.searchText.value;
-        var track = [], album = [];
-        if (input && input.length > 1){
-            document.getElementById('header').innerHTML = `Results: ${input}`;
-            spotifyApi.search(input, ['track', 'album'], {limit: 50}).then((res)=>{
-                //Code for Album Filtering
-                var albums = res.albums;
-                var key_count = 0;
-                for(let i=0; i<res.albums.items.length; i++){
-                    if(albums.items[i].album_type === 'album'){
-                        let obj = {};
-                        obj['key'] = key_count;
-                        obj['artwork'] = albums.items[i].images[1].url;
-                        obj['artist'] = albums.items[i].artists[0].name;
-                        obj['album'] = albums.items[i].name;
-                        obj['release_date'] = albums.items[i].release_date;
-                        obj['url'] = albums.items[i].href;
-                        album.push(obj);
-                        key_count++;
-                    }
-                }
-                // Will display album by newest first
-                album = this.sortArrayByDate(album, 'date-desc');
+  }
+  // function that handle clicking on Search button
+  handleSearch = (e) => {
+    e.preventDefault();
+    let header = this.state.header;
+    if(this.state.searchText.length < 1){
+      this.props.addToast('Search Field is Empty', {
+          appearance: 'info',
+          autoDismiss: true
+      })
+    } else {
+      header = `Results: ${this.state.searchText}`;
+      this.setState({ loading: true });
+      this.fetchData();
+    }
+    this.setState({ 
+      header: header 
+    });
+  }
+  // Fetches Preview if initial fetch returns empty
+  getPreview = async (href) => {
+    try {
+      const res = await axios.get(href, {
+        headers: { 'Authorization' : `Bearer ${this.token}` }
+      });
+      return res.data.preview_url;
+    } catch (error) {
+      this.props.addToast(`${error.response.status}: ${error.response.data.error.message}`, {
+        appearance: 'error',
+        autoDismiss: true
+      });
+    }
+  }
+  fetchTracklist = async (index) => {
+    try{
+      this.setState({ modalLoading: true })
+      const res = await axios.get(this.state.albumList[index].album_href, {
+        headers: { 'Authorization' : `Bearer ${this.token}` }
+      });
+      let tracklist = [];
+      const trackData = res.data.tracks.items;
 
-                // Code for Track Filtering
-                let promiseArray = [];
-                for (let i = 0; i < res.tracks.items.length; i++) {
-                    promiseArray.push(this.getTrackDetails(i, res.tracks.items[i], track));
-                }
-                Promise.all(promiseArray).then(function() {
-                    track = this.sortArrayByDate(track, sort);                    
-                    this.setState({
-                        track: track,
-                        album: album,
-                        searchCompleted: true,
-                        loading: false
-                    });
-                }.bind(this));
-            })            
+      // Stores Tracklist
+      for(let i = 0; i < trackData.length; i++){
+        let store = {
+          name: trackData[i].name,
+          preview: trackData[i].preview_url
         }
-    }
-    getTrackDetails(i, trackObj, track) {
-        let tPromise = new Promise(function(resolve, reject) {
-            let obj = {};
-            obj['key'] = i;
-            obj['popularity'] = trackObj.popularity;
-            obj['release_date'] = trackObj.album.release_date;
-            obj['artist'] = trackObj.artists[0].name;
-            obj['id']=trackObj.album.id;
-            obj['track'] = trackObj.name;
-            obj['artwork'] = trackObj.album.images[1].url;
-            obj['preview'] = trackObj.preview_url;
-            if(trackObj.preview_url === null){
-                let reformatedURL = `${trackObj.album.href}?access_token=${this.token}`;
-                fetch(reformatedURL).then((res)=>{
-                    return res.json();
-                }).then((data)=>{
-                    let filtered = data.tracks.items.filter(i => {
-                        return i.name === obj['track'];
-                    });
-                    if (filtered.length > 0) {
-                        obj['preview'] = filtered[0].preview_url
-                        track.push(obj)
-                    }
-                    resolve();
-                });
-            } else {
-                track.push(obj);
-                resolve();
-            }
-        }.bind(this));
+        tracklist.push(store);
+      }
+      
+      const albumTracklist = {
+        tracklist: tracklist,
+        release_date: res.data.release_date,
+        album: res.data.name,
+        artwork: res.data.images[1].url,
+        artist: res.data.artists[0].name
+      }
 
-        return tPromise;
+      this.setState({ 
+        albumTracklist,
+        searchCompleted: true, 
+        modalLoading: false 
+      });
+    } catch (error) {
+      this.props.addToast(`${error.response.status}: ${error.response.data.error.message}`, {
+        appearance: 'error',
+        autoDismiss: true
+      });
     }
-    handleOption(event){
-        var sort = event.target.value;
-        var sortedTrack = this.sortArrayByDate(this.state.track, sort);
-        this.setState({
-            selectedOption: event.target.value,
-            track: sortedTrack
-        });
-
-    }
-    handleOpenTracklist(apiURL, releaseDate){
-        var reformatedURL = `${apiURL}?access_token=${this.token}`;
-        var trackArray = [], duration_ms = 0, duration;
-        fetch(reformatedURL).then((res)=>{
-            return res.json();
-        }).then((data)=>{
-            for(var i = 0; i<data.tracks.items.length; i++){
-                let obj = {};
-                obj['key'] = i;
-                obj['tracklist'] = data.tracks.items[i].name;
-                obj['preview'] = data.tracks.items[i].preview_url;
-                duration_ms += data.tracks.items[i].duration_ms;
-                trackArray.push(obj);
-            }
-            // If duration is less than an hour, display minute and seconds
-            if(duration_ms < (1 * 60 * 60 * 1000)){
-                let seconds = Math.floor((duration_ms / 1000)%60),
-                    minutes = Math.floor((duration_ms / (1000 * 60)));
-                duration  = `${minutes} min ${seconds}s`;
-            }else{
-                let minutes = Math.floor((duration_ms / (1000 * 60)) % 60),
-                    hours = Math.floor((duration_ms / (1000 * 60 * 60)) % 24);
-                duration = `${hours} hours ${minutes} min`;
-            }
-            this.setState({
-                tracklist: trackArray,
-                trackArtist: [data.artists[0].name, data.name],
-                albumArtwork: data.images[1].url,
-                releaseDate: releaseDate,
-                duration: duration,
-                show: true,
-                isAlbumPlaying: false,
-            });
-        });
-    }
-    playTrack(player, preview){
-        var audio_player = document.querySelector('audio');
-        var classlist = document.querySelectorAll('i')[player].className;
-        var list_item = document.querySelectorAll('.track-item')[player];
-        if(this.state.audioIndex !== null){
-            document.querySelectorAll('.track-preview')[this.state.audioIndex].pause();
-            this.setState({
-                audioIndex: null
-            });
+  }
+  handleAlbumClick = (index) => {
+    this.setState({ displayModal: true });
+    
+    this.fetchTracklist(index);
+  }
+  handleTrackClick = (index) => {
+    this.setState({ 
+      audio_src: this.state.trackList[index].track_preview,
+    })
+  }
+  handleOptionChange = (option) => {
+    const sortedList = this.sortList(this.state.trackList, option);
+    this.setState({ 
+      trackList: sortedList,
+      selected_option: option
+    });
+  }
+  handleCheckbox = (e) => {
+    // Calling event.persist() on the event removes the synthetic event
+    // from the pool and allows references to the event to be 
+    // retained asynchronously
+    e.persist();
+    if(e.target.name === 'album'){
+      this.setState( prevState => {
+        return {
+          ...prevState,
+          inputFilter: {
+            album: !prevState.inputFilter.album,
+            track: prevState.inputFilter.track,
+            limit: prevState.inputFilter.limit
+          }
         }
-
-        if(this.state.currentlyPlaying !== null){
-            // eslint-disable-next-line
-            let currentPlayer = document.querySelectorAll('i')[this.state.currentlyPlaying].className;
-            currentPlayer = currentPlayer.replace('pause', 'play');
-            audio_player.pause();
-            document.getElementsByClassName('track-item')[this.state.currentlyPlaying].style.color = "black";
+      });
+    } else if (e.target.name === 'track') {
+      this.setState( prevState => {
+        return {
+          ...prevState,
+          inputFilter: {
+            album: prevState.inputFilter.album,
+            track: !prevState.inputFilter.track,
+            limit: prevState.inputFilter.limit
+          }
         }
-        var playPromise = audio_player.play();
-
-        if(classlist.includes('play')){
-            classlist = classlist.replace('play', 'pause');
-            if (playPromise !== undefined) {
-                playPromise
-                .then(_ => {
-                    // Automatic playback started!
-                    // Show playing UI.
-                    // console.log("audio played auto");
-                })
-                .catch(error => {
-                    // Auto-play was prevented
-                    // Show paused UI.
-                    // console.log("playback prevented");
-                });
-            }
-            list_item.style.color = "red";
-        }else{
-            classlist = classlist.replace('pause', 'play');
-            audio_player.pause();
-            list_item.style.color = "black";
+      });
+    } else {
+      this.setState( prevState => {
+        return {
+          ...prevState,
+          inputFilter: {
+            album: prevState.inputFilter.album,
+            track: prevState.inputFilter.track,
+            limit: e.target.value
+          }
         }
-        document.getElementsByTagName('i')[player].className = classlist;
-        this.setState({
-            preview: preview,
-            currentlyPlaying: player,
-            isAudioPlaying: true
-        });
+      })
     }
-    playPreview(num, preview){
-        if(!preview){
-            alert('No Preview Found.');
-        } else{
-            var controls = document.createAttribute("controls");
-            var audios = document.querySelectorAll('.track-preview');
-            
-            if(this.state.audioIndex !== null && audios[num] !== this.state.audioIndex){
-                audios[this.state.audioIndex].pause();
-                audios[this.state.audioIndex].removeAttribute("controls");
-            }
+  }
 
-            audios[num].play();
-            audios[num].setAttributeNode(controls);
-            this.setState({
-                audioIndex: num,
-                isAudioPlaying: true
-            });
-        }
-    }
-    render() {
-        var { loading } = this.state;
+  handlePlayingStatus = () => this.setState({ audio_src: '' });
+  handleCloseModal = () =>  this.setState({ displayModal: false }) 
+  
+  render() {
+    const { 
+      loading, 
+      header, 
+      albumList, 
+      trackList, 
+      displayModal, 
+      albumTracklist, 
+      audio_src, 
+      modalLoading, 
+      selected_option, 
+      inputFilter
+    } = this.state;
+    
+    // Displays loading icon when fetching tracks and albums
+    const loadSpinner = loading ? <Spinner /> : null;
 
+    // Render Album List Component on DOM
+    const loadAlbumList = () => {
+      if(!loading && albumList.length > 0) {
         return (
-            <div className="search-container">
-                <h1 id="header" className="text-center">Search</h1>
-                <form className="text-center" onSubmit={(e)=>this.handleSubmit(e, this.state.selectedOption)}>
-                    <input placeholder="Search" type="text" className="form-control" ref="searchText"></input>
-                    <button type="button" className="btn btn-info">Let's Get It!</button>
-                </form>
-                {loading && <Spinner />}
-                {this.state.searchCompleted && this.state.track.length > 0 &&
-                <div className="search-result">
-                    <div>
-                        <h1 className="text-center">Albums</h1>
-                        <div id="album-container">
-                            <Modal show={this.state.show}>
-                                <div className="artwork-container">
-                                    <img className="track-artwork" src={this.state.albumArtwork} alt="not available"></img>
-                                    <div className="track-info">
-                                        <h2>{this.state.trackArtist[1]}</h2>
-                                        <hr/>
-                                        <p>By {this.state.trackArtist[0]}</p>
-                                        <p>{this.state.releaseDate}</p>
-                                        <p>{this.state.tracklist.length} Songs - {this.state.duration}</p>
-                                        <audio autoPlay controls src={this.state.preview}></audio>
-                                    </div>
-                                </div>
-                                <div className="track-list-container">
-                                    <h1>Tracklist</h1>
-                                    <ol>{this.state.tracklist.map((track)=>{
-                                        return(
-                                            <div className="track-item-container" key={track.key} onClick={()=>this.playTrack(track.key, track.preview)}>
-                                                <li className="track-item">
-                                                    <i className="fa fa-play-circle"></i>
-                                                    {`${track.tracklist}`}
-                                                </li>
-                                            </div>
-                                        )
-                                    })}</ol>
-                                </div>
-                                <span><i className="fa fa-window-close modal-close-button" onClick={this.hideModal}></i></span>
-                            </Modal>
-                            {this.state.album.map((album)=>{
-                                return(
-                                    <div key={album.key} style={{margin: '2rem 1rem'}}>
-                                        <img onClick={()=>this.handleOpenTracklist(album.url, album.release_date)} className="image-artwork" alt="NoPreview" src={album.artwork}></img>
-                                        <h6 style={{paddingTop: '10px', fontWeight: 'bold'}} className="text-center">{album.artist}</h6>
-                                        <h6 className="text-center" style={{fontWeight: 'bold'}}>{album.album}</h6>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                    <div>
-                        <h1 className="text-center">Tracks</h1>
-                        <div className="form-group">
-                            <p>Sort By:</p>
-                            <select className="form-control" value={this.state.selectedOption} onChange={(e)=>this.handleOption(e)}>
-                                <option value="popularity">Popularity</option>
-                                <option value="date-desc">Newest First</option>
-                                <option value="date-asc">Oldest First</option>
-                            </select>
-                        </div>
-                        <div style={{position: 'relative', display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around', padding: '0 2rem'}}>
-                        {this.state.track.map((track, index)=>{
-                            return(
-                                <div key={index} className="tracks-track-container">
-                                    <img className="image-artwork" onClick={()=>this.playPreview(index, track.preview)} alt="NoPreview" src={track.artwork}></img>
-                                    <h6 style={{paddingTop: '10px'}} className="text-center">{track.artist}</h6>
-                                    <h6 className="text-center">{track.track}</h6>
-                                    <audio className="track-preview" src={track.preview} />
-                                </div>
-                            )
-                        })}</div>
-                    </div>
-                </div>}
-                <audio src=""></audio>
-                {this.state.searchCompleted && this.state.track.length === 0 && 
-                    <h1 className="text-center">No Result Found</h1>
-                }
-            </div>
-        );
+          <ArtworkDisplay 
+            header="Albums"
+            albumList={albumList} 
+            onAlbumClick={this.handleAlbumClick}/>
+        )
+      }
     }
+    // Render Track List Component on DOM
+    const loadTrackList = () => {
+      if(!loading && trackList.length > 0){
+        return( 
+          <ArtworkDisplay 
+            header="Tracks"
+            albumList={trackList} 
+            selected={selected_option} 
+            onAlbumClick={this.handleTrackClick} 
+            onchange={this.handleOptionChange}/>
+        )
+      }
+    }
+    return (
+      <div>
+        <audio alt="No Tracks Found" src={audio_src} autoPlay></audio>
+        <Modal displayModal={displayModal} hideModal={this.handleCloseModal}>
+          {this.state.searchCompleted && <AlbumTracklist loading={modalLoading} albumTracklist={albumTracklist} isPlaying={this.handlePlayingStatus} displayModal={displayModal}/>}
+        </Modal>
+        <h1 className="text-center" style={{textTransform: 'capitalize'}}>{header}</h1>
+        <SearchForm onSearch={this.handleSearch} onChange={(e) => this.setState({ searchText: e.target.value })}/>
+        <SearchFilter onchange={this.handleCheckbox} filter={inputFilter}/>
+        {loadSpinner}
+        {loadAlbumList()}
+        {loadTrackList()}
+      </div>
+    )
+  }
 }
 
-export default Search;
+export default withToast(Search2);

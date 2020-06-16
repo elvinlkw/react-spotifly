@@ -31,10 +31,31 @@
   opacity: 1;
 }
 
-.Hide{
-  opacity: 0;
-}
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 828px) {
+  .AlbumTracklist .description {
+    display: none;
+  }
 
-.Block{
-  opacity: 1;
+  .AlbumTracklist .TrackListContainer {
+    padding: 0;
+  }
+
+  .AlbumTracklist img{
+    display: block;
+    margin: 1em auto;
+  }
+
+  .AlbumTracklist h2{
+    text-align: center;
+  }
+
+  .TrackListContainer li {
+    font-size: 0.9em;
+  }
+
+  .TrackListContainer i {
+    display: none;
+  }
 }

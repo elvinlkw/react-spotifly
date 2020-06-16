@@ -1,17 +1,23 @@
-import React, { Component } from 'react';
-import './Modal.css';
+import React from 'react';
+import Backdrop from './Backdrop';
+import classes from './style/Modal.module.css';
 
-class Modal extends Component {
-    render() { 
-        const showHideModal = this.props.show ? "modal display-block" : "modal display-none";
-        return (
-            <div className={showHideModal}>
-                <div className="modal-main">
-                    {this.props.children}
-                </div>
-            </div>
-        );
-    }
+const Modal2 = ({ displayModal, children, hideModal }) => {
+  return (
+    <div>
+      <Backdrop show={displayModal} clicked={hideModal}/>
+      <div className={classes.Modal}
+        style={{
+          transform: displayModal
+            ? "translateY(0)"
+            : "translateY(-100vh))",
+          opacity: displayModal ? "1" : "0",
+          display: displayModal ? "block" : "none"
+        }}>
+        {children}
+      </div>
+    </div>
+  )
 }
 
-export default Modal;
+export default Modal2
