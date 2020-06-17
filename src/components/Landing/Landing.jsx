@@ -4,6 +4,7 @@ import withToast from '../../hoc/withToast';
 import Spinner from '../Layout/Spinner';
 import TopTrack from './TopTrack';
 import TopArtist from './TopArtist';
+import Chart from './Chart';
 
 class Landing extends Component {
   constructor(props){
@@ -15,10 +16,11 @@ class Landing extends Component {
     this.state = {
       loading: true,
       isPlaying: true,
+      favorite_genres: {},
       top_artist: {},
       top_track: {},
       player_1: true,
-      player_2: true
+      player_2: true,
     }
   }
   async componentDidMount(){
@@ -28,7 +30,7 @@ class Landing extends Component {
       let res = await axios.get('https://api.spotify.com/v1/me/top/artists', {
         params: {
           time_range: 'long_term',
-          limit: 1
+          limit: 50
         },
         headers: { 'Authorization': `Bearer ${this.token}` }
       });
@@ -36,7 +38,7 @@ class Landing extends Component {
       const res_topTrack = await axios.get(`https://api.spotify.com/v1/artists/${artistId}/top-tracks`, {
         params: { country: 'US' },
         headers: { 'Authorization': `Bearer ${this.token}` }
-      })
+      });
 
       // Storing Favorite Artist
       let data = res.data.items[0];
@@ -48,16 +50,32 @@ class Landing extends Component {
         top_track: res_topTrack.data.tracks[0].name,
         preview_url: res_topTrack.data.tracks[0].preview_url
       }
-
+      // Storing Genres of artist
+      const items = res.data.items;
+      let genres = {}; let modifiedKey;
+      for(let i = 0; i < items.length; i++) {
+        for(let j = 0; j < items[i].genres.length; j++){
+          // modifiedKey = items[i].genres[j].indexOf(' ') >= 0 ? items[i].genres[j].split(' ').join('_') : items[i].genres[j];
+          // replace whitespace with an underscore
+          modifiedKey = items[i].genres[j].split(/[ -]+/).join('_');
+          // create an object with count of favorite genres
+          if(genres[modifiedKey]){
+            genres[modifiedKey] += 1
+          } else {
+            genres[modifiedKey] = 1;
+          }
+        }
+      }
+      const sortedArray = this.sortGenres(genres);
+      
       // Fetch Top Tracks for user
       res = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
         params: {
           time_range: 'long_term',
-          limit: 50
+          limit: 1
         },
         headers: { 'Authorization': `Bearer ${this.token}` }
       });
-      console.log(res.data)
       // Storing Favorite Track
       data = res.data.items[0];
       const top_track = {
@@ -72,10 +90,10 @@ class Landing extends Component {
       this.setState({
         top_artist,
         top_track,
-        loading: false 
+        loading: false,
+        favorite_genres: sortedArray
       });
     } catch(error) {
-      console.log(error);
       this.props.addToast(`${error.response.status}: ${error.response.data ? error.response.data.error.message : 'Error Encountered'}`, {
         appearance: 'error',
         autoDismiss: true
@@ -84,6 +102,23 @@ class Landing extends Component {
   }
   componentWillUnmount(){
     document.removeEventListener('play' , this.handleStop, true);
+  }
+  sortGenres = (genres) => {
+    let sortedGenres = {};
+    let sortedArray = [];
+    // Create an array with object keys and values for sorting
+    for (let key in genres){
+        sortedArray.push([key, genres[key]]);
+    }
+    // Sort Array in descending order
+    sortedArray.sort((a, b) => {
+        return b[1] - a[1];
+    });
+    // Push information into a sorted object
+    for(let i = 0; i < 20; i++){
+      sortedGenres[sortedArray[i][0]] = sortedArray[i][1];
+    }
+    return sortedGenres;
   }
   handleStop = (e) => {
     var checkEnded = (i)=>{
@@ -133,7 +168,8 @@ class Landing extends Component {
       top_track,
       top_artist,
       player_1,
-      player_2
+      player_2,
+      favorite_genres
     } = this.state;
 
     if( loading ) return <Spinner />
@@ -142,6 +178,7 @@ class Landing extends Component {
       <div className="container">
         <TopTrack top_track={top_track} onclick={this.handleClick} icon={player_1}/>
         <TopArtist top_artist={top_artist} onclick={this.handleClick} icon={player_2}/>
+        <Chart genres={favorite_genres} />
       </div>
     )
   }
