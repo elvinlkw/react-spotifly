@@ -1,0 +1,44 @@
+.TopTrack {
+  margin: 3rem 0;
+}
+
+.TopTrack h1{
+  margin-bottom: 2rem;
+}
+
+.TopTrack div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.TopTrack img{
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  width: 80%;
+}
+
+.Clickables {
+  flex-direction: row!important;
+  width: 8rem;
+  justify-content: space-between!important;
+}
+
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 828px) {
+  .Artist div:first-child {
+    order: 2
+  }
+
+  .Artist div:last-child {
+    order: 1
+  }
+
+  .TopTrack img{
+    margin-bottom: 2em;
+  }
+}
