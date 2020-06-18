@@ -52,17 +52,14 @@ class Landing extends Component {
       }
       // Storing Genres of artist
       const items = res.data.items;
-      let genres = {}; let modifiedKey;
+      let genres = {};
       for(let i = 0; i < items.length; i++) {
         for(let j = 0; j < items[i].genres.length; j++){
-          // modifiedKey = items[i].genres[j].indexOf(' ') >= 0 ? items[i].genres[j].split(' ').join('_') : items[i].genres[j];
-          // replace whitespace with an underscore
-          modifiedKey = items[i].genres[j].split(/[ -]+/).join('_');
           // create an object with count of favorite genres
-          if(genres[modifiedKey]){
-            genres[modifiedKey] += 1
+          if(genres[items[i].genres[j]]){
+            genres[items[i].genres[j]] += 1
           } else {
-            genres[modifiedKey] = 1;
+            genres[items[i].genres[j]] = 1;
           }
         }
       }

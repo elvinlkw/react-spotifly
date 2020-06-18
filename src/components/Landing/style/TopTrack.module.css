@@ -20,6 +20,10 @@
   width: 80%;
 }
 
+.TopTrack i {
+  cursor: pointer;
+}
+
 .Clickables {
   flex-direction: row!important;
   width: 8rem;
