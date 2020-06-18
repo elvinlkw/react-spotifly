@@ -181,23 +181,27 @@ class Search2 extends Component {
         headers: { 'Authorization' : `Bearer ${this.token}` }
       });
       let tracklist = [];
+      let duration_ms = 0;
       const trackData = res.data.tracks.items;
 
       // Stores Tracklist
       for(let i = 0; i < trackData.length; i++){
+        duration_ms += trackData[i].duration_ms
         let store = {
           name: trackData[i].name,
-          preview: trackData[i].preview_url
+          preview: trackData[i].preview_url,
         }
         tracklist.push(store);
       }
-      
+      console.log(res.data);
       const albumTracklist = {
-        tracklist: tracklist,
+        tracklist,
+        duration_s: duration_ms / 1000,
         release_date: res.data.release_date,
         album: res.data.name,
         artwork: res.data.images[1].url,
-        artist: res.data.artists[0].name
+        artist: res.data.artists[0].name,
+        uri: res.data.uri,
       }
 
       this.setState({ 

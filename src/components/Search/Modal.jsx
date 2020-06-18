@@ -14,6 +14,7 @@ const Modal2 = ({ displayModal, children, hideModal }) => {
           opacity: displayModal ? "1" : "0",
           display: displayModal ? "block" : "none"
         }}>
+        <i className={`fa fa-window-close ${classes.CloseButton}`} aria-hidden="true" onClick={hideModal}></i>
         {children}
       </div>
     </div>

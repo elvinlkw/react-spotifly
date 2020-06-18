@@ -17,7 +17,7 @@ const SearchFilter = ({ onchange, filter: { album, track, limit } }) => {
                 <input type="checkbox" name="album" checked={album} onChange={onchange}/>
                 <label htmlFor="opt-album">Album</label>
               </form>
-              <form action="">
+              <form>
                 <input type="checkbox" name="track" checked={track} onChange={onchange}/>
                 <label htmlFor="opt-track">Track</label>
               </form>

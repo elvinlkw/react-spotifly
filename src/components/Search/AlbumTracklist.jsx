@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import withToast from '../../hoc/withToast';
 import classes from './style/AlbumTracklist.module.css';
 import Spinner from '../Layout/Spinner';
 
-const AlbumTracklist = ({ albumTracklist: { tracklist, release_date, album, artwork, artist }, isPlaying, loading, displayModal, addToast }) => {
+const AlbumTracklist = ({ albumTracklist: { tracklist, duration_s, release_date, album, artwork, artist, uri }, isPlaying, loading, displayModal, addToast }) => {
   // Instantiate states
   let [ preview, setPreview ] = useState('');  // preview_href
   let [ currentTrack, setCurrentTrack ] = useState('');  // 
@@ -28,6 +28,28 @@ const AlbumTracklist = ({ albumTracklist: { tracklist, release_date, album, artw
       isPlaying();
     }
   }
+  
+  const displayNowPlaying = () => {
+    if( currentTrack.length > 0 ){
+      return (
+        <Fragment>
+          <p className="text-center">Now Playing: </p>
+          <p className="text-center"><strong>{currentTrack}</strong></p>
+        </Fragment>
+      )
+    }
+  }
+
+  const displayDuration = () => {
+    if(duration_s < 3600){
+      return `${Math.floor(duration_s / 60)} min`;
+    } else {
+      const hours = Math.floor(duration_s / 3600);
+      let minutes = Math.floor((duration_s % 3600) / 60);
+
+      return `${hours} hr ${minutes} min`;
+    }
+  }
 
   if(loading) return <Spinner />
 
@@ -36,13 +58,18 @@ const AlbumTracklist = ({ albumTracklist: { tracklist, release_date, album, artw
       <div className="col-md-4">
         <img src={artwork} alt="No Previews Found"/>
         <div className={classes.description}>
-          <h2>{album}</h2>
+          <div className={classes.AlbumName}>
+            <h3>{album}</h3>
+            <form action={uri}>
+              <input type="submit" className="btn btn-success" value="Spotify"/>
+            </form>
+          </div>
           <hr/>
           <p>By {artist}</p>
           <p>{release_date}</p>
-          <p>{tracklist.length} Songs - {'duration'}</p>
+          <p>{tracklist.length} Songs - {displayDuration()}</p>
           <audio controls autoPlay src={preview} className="player-album"></audio>
-          <p className="text-center">{currentTrack}</p>
+          {displayNowPlaying()}
         </div>
       </div>
       <div className={`col-md-8 ${classes.TrackListContainer}`}>

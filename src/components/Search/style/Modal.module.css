@@ -14,3 +14,23 @@
   height: 90%;
   overflow-y: auto;
 }
+
+.Modal .CloseButton {
+  position: fixed;
+  right: 20px;
+  color: black;
+  z-index: 501;
+  cursor: pointer;
+}
+
+.Modal .CloseButton:hover {
+  color: red;
+}
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 828px) {
+  .Modal .CloseButton {
+    right: 10px;
+  }
+}
