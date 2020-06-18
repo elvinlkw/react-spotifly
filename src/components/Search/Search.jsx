@@ -11,10 +11,11 @@ import axios from 'axios';
 class Search2 extends Component {
   constructor(props){
     super(props);
-    let url = window.location.href;
-    if(url.indexOf("token=") > -1){ 
-        this.token = url.split("token=")[1].split("&")[0].trim();
-    }
+    // let url = window.location.href;
+    // if(url.indexOf("token=") > -1){ 
+    //     this.token = url.split("token=")[1].split("&")[0].trim();
+    // }
+    this.token = sessionStorage.getItem('token');
     this.state = {
       loading: false,
       modalLoading: false,

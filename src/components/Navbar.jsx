@@ -9,7 +9,7 @@ const Navbar = ({ token }) => {
 			<div>
 				<img src={logo} alt="" style={{ width: '40px' }}/>
 				<span className="navbar-brand">
-					<NavLink exact to={`/react-spotifly#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Spotifly</NavLink>
+					<NavLink exact to={`/react-spotifly`} className="nav-link">Spotifly</NavLink>
 				</span>
 			</div>
 			<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,13 +18,13 @@ const Navbar = ({ token }) => {
 			<div className="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul className="navbar-nav ml-auto" id="navbarSupportedContent">
 				<li className="nav-item">
-					<NavLink exact to={`/react-spotifly#access_token=${token}&token_type=Bearer&expires_in=3600`} activeClassName="active" className="nav-link">Home</NavLink>
+					<NavLink exact to={`/react-spotifly`} activeClassName="active" className="nav-link">Home</NavLink>
 				</li>
 				{/* <li className="nav-item">
-						<NavLink exact to={`/profile#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">My Profile</NavLink>
+						<NavLink exact to={`/profile`} className="nav-link">My Profile</NavLink>
 				</li> */}
 				<li className="nav-item">
-					<NavLink exact to={`/react-spotifly/search#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Search</NavLink>
+					<NavLink exact to={`/react-spotifly/search`} className="nav-link">Search</NavLink>
 				</li>
 				<li className="nav-item">
 					<NavLink exact to={`/react-spotifly/top-tracks#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Top Tracks</NavLink>

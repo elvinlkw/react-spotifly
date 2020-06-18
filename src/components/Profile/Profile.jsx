@@ -23,7 +23,7 @@ class Profile extends Component {
         }
         spotifyApi.setAccessToken(token);
     }
-    componentWillMount(){
+    componentDidMount(){
         spotifyApi.getMe().then((res)=>{
             try{
                 this.setState({
