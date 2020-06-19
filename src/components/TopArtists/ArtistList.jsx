@@ -8,7 +8,7 @@ export class ArtistList extends Component {
             dataValid: false
         }
     }
-    componentWillMount(){
+    componentDidMount(){
         var { spotifyApi, term } = this.props;
         var tempArray = [];
         spotifyApi.getMyTopArtists({limit: 50, time_range: term}).then((res)=>{
@@ -38,10 +38,10 @@ export class ArtistList extends Component {
     }
     render() {
         var { term } = this.props;
-        var termHeader = term.substring(0, term.indexOf('_')).toUpperCase();
+        var termHeader = term.substring(0, term.indexOf('_'));
         return (
             <div className="col-lg-4">
-                <p style={{fontWeight: 'bold', textAlign: 'center', paddingTop: '20px'}}>{termHeader} TERM</p>
+                <p style={{fontWeight: 'bold', padding: '20px 0 0 20px', textTransform: 'capitalize'}}>{termHeader} term</p>
                 <ol className="artist-list">
                     {this.state.dataValid && 
                     this.state.itemList.map((item)=>{
