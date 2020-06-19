@@ -1,17 +1,23 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom';
-import logo from '../img/spotify-logo.png';
+import { NavLink, withRouter } from 'react-router-dom';
 import './../style/Navbar.css';
 
-const Navbar = ({ token }) => {
+const Navbar = ({ token, history }) => {
+	const handleLogOut = (e) => {
+		e.preventDefault();
+		sessionStorage.clear();
+		const url = 'https://accounts.spotify.com/en/logout';
+		const spotifyLogoutWindow = window.open(url, 'Spotify Logout', 'width=700,height=500,top=40,left=40');
+		setTimeout(() => {
+			spotifyLogoutWindow.close();
+			history.push('/react-spotifly/login');
+		}, 2000);
+	}
 	return (
 		<div className="navbar navbar-expand-lg navbar-dark bg-dark">
-			<div>
-				<img src={logo} alt="" style={{ width: '40px' }}/>
-				<span className="navbar-brand">
-					<NavLink exact to={`/react-spotifly`} className="nav-link">Spotifly</NavLink>
-				</span>
-			</div>
+			<span className="navbar-brand">
+				<NavLink exact to={`/react-spotifly`} className="nav-link">Spotify Data Analyzer</NavLink>
+			</span>
 			<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span className="navbar-toggler-icon"></span>
 			</button>
@@ -27,10 +33,13 @@ const Navbar = ({ token }) => {
 					<NavLink exact to={`/react-spotifly/search`} className="nav-link">Search</NavLink>
 				</li>
 				<li className="nav-item">
-					<NavLink exact to={`/react-spotifly/top-tracks#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Top Tracks</NavLink>
+					<NavLink exact to={`/react-spotifly/top-tracks`} className="nav-link">Top Tracks</NavLink>
 				</li>
 				<li className="nav-item">
 					<NavLink exact to={`/react-spotifly/top-artists#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Top Artists</NavLink>
+				</li>
+				<li className="nav-item">
+					<a href="!#" onClick={handleLogOut} className="nav-link">Log Out</a>
 				</li>
 			</ul>
 			</div>
@@ -38,4 +47,4 @@ const Navbar = ({ token }) => {
 	);
 }
 
-export default Navbar;
+export default withRouter(Navbar);
