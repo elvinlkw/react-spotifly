@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
+import AuthContext from '../context/auth-context';
 import './../style/Navbar.css';
 
-const Navbar = ({ token, history }) => {
+const Navbar = ({ history }) => {
+	const authContext = useContext(AuthContext);
 	const handleLogOut = (e) => {
 		e.preventDefault();
 		sessionStorage.clear();
@@ -10,7 +12,9 @@ const Navbar = ({ token, history }) => {
 		const spotifyLogoutWindow = window.open(url, 'Spotify Logout', 'width=700,height=500,top=40,left=40');
 		setTimeout(() => {
 			spotifyLogoutWindow.close();
-			history.push('/react-spotifly/login');
+			sessionStorage.clear();
+			authContext.updateAuth(false)
+			history.push('/react-spotifly/');
 		}, 2000);
 	}
 	return (

@@ -5,8 +5,10 @@ import SearchFilter from './SearchFilter';
 import Spinner from '../Layout/Spinner';
 import ArtworkDisplay from './ArtworkDisplay';
 import AlbumTracklist from './AlbumTracklist';
+import AuthContext from '../../context/auth-context';
 import Modal from './Modal';
 import axios from 'axios';
+
 
 class Search2 extends Component {
   constructor(props){
@@ -28,7 +30,6 @@ class Search2 extends Component {
       albumTracklist: {},
       displayModal: false,
       searchCompleted: false,
-      isLoginRequired: false,
       inputFilter:{
         limit: 50,
         album: true,
@@ -36,6 +37,7 @@ class Search2 extends Component {
       }
     }
   }
+  static contextType = AuthContext;
   fetchData = async () => {
     const { inputFilter } = this.state;
     let type = '';
@@ -46,14 +48,14 @@ class Search2 extends Component {
       this.props.addToast('Nothing selected', {
         appearance: 'error',
         autoDismiss: true
-      })
+      });
     }
     try {
       const res = await axios.get('https://api.spotify.com/v1/search', {
       params: {
         q: this.state.searchText,
         type: type,
-        limit: this.state.inputFilter.limit,
+        limit: this.state.inputFilter.limit
       },
       headers: { 'Authorization' : `Bearer ${this.token}` }
     });
@@ -123,8 +125,8 @@ class Search2 extends Component {
       });
       this.setState({ loading: false });
       if(error.response.status === 401){
-				this.setState({ isLoginRequired: true });
-				sessionStorage.clear();
+        sessionStorage.clear();
+        this.context.updateAuth(false);
 			}
     }
   }
@@ -175,10 +177,6 @@ class Search2 extends Component {
         appearance: 'error',
         autoDismiss: true
       });
-      if(error.response.status === 401){
-				this.setState({ isLoginRequired: true });
-				sessionStorage.clear();
-			}
     }
   }
   fetchTracklist = async (index) => {
@@ -221,8 +219,8 @@ class Search2 extends Component {
         autoDismiss: true
       });
       if(error.response.status === 401){
-				this.setState({ isLoginRequired: true });
-				sessionStorage.clear();
+        sessionStorage.clear();
+        
 			}
     }
   }
@@ -299,7 +297,7 @@ class Search2 extends Component {
       modalLoading, 
       selected_option, 
       inputFilter,
-      isLoginRequired
+      searchCompleted
     } = this.state;
     
     // Displays loading icon when fetching tracks and albums
@@ -329,17 +327,11 @@ class Search2 extends Component {
         )
       }
     }
-    const isRedirect = () => {
-      if(isLoginRequired) {
-        this.props.history.push('/react-spotifly/login');
-      }
-    }
     return (
       <div>
-        {isRedirect()}
         <audio alt="No Tracks Found" src={audio_src} autoPlay></audio>
         <Modal displayModal={displayModal} hideModal={this.handleCloseModal}>
-          {this.state.searchCompleted && <AlbumTracklist loading={modalLoading} albumTracklist={albumTracklist} isPlaying={this.handlePlayingStatus} displayModal={displayModal}/>}
+          {searchCompleted && <AlbumTracklist loading={modalLoading} albumTracklist={albumTracklist} isPlaying={this.handlePlayingStatus} displayModal={displayModal}/>}
         </Modal>
         <h1 className="text-center" style={{textTransform: 'capitalize'}}>{header}</h1>
         <SearchForm onSearch={this.handleSearch} onChange={(e) => this.setState({ searchText: e.target.value })}/>

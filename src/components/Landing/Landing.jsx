@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import withToast from '../../hoc/withToast';
 import Spinner from '../Layout/Spinner';
 import TopTrack from './TopTrack';
 import TopArtist from './TopArtist';
 import Chart from './Chart';
+import AuthContext from '../../context/auth-context';
 
 class Landing extends Component {
   constructor(props){
     super(props);
-    // let url = window.location.href;
-    // if(url.indexOf("token=") > -1){ 
-    //     this.token = url.split("token=")[1].split("&")[0].trim();
-    // }
     this.token = sessionStorage.getItem('token');
     this.state = {
       loading: true,
@@ -24,7 +22,12 @@ class Landing extends Component {
       player_2: true,
     }
   }
+  static contextType = AuthContext;
   async componentDidMount(){
+    if(this.props.history.location.hash.length > 0){
+      this.props.history.push('/react-spotifly/');
+    }
+
     document.addEventListener('play', this.handleStop ,true);
     try{
       // Fetching for Top Artist and Artist Top Track
@@ -97,8 +100,8 @@ class Landing extends Component {
         autoDismiss: true
       });
       if(error.response.status === 401){
-				this.setState({ isLoginRequired: true });
-				sessionStorage.clear();
+        sessionStorage.clear();
+        this.context.updateAuth(false);
 			}
     }
   }
@@ -171,17 +174,13 @@ class Landing extends Component {
       top_artist,
       player_1,
       player_2,
-      favorite_genres,
-      isLoginRequired
+      favorite_genres
     } = this.state;
 
     if( loading ) return <Spinner />
-
-    const isRedirect = isLoginRequired ? this.props.history.push('/react-spotifly/login') : null;
     
     return (
       <div className="container">
-        {isRedirect}
         <TopTrack top_track={top_track} onclick={this.handleClick} icon={player_1}/>
         <TopArtist top_artist={top_artist} onclick={this.handleClick} icon={player_2}/>
         <Chart genres={favorite_genres} />
@@ -190,4 +189,4 @@ class Landing extends Component {
   }
 }
 
-export default withToast(Landing)
+export default withRouter(withToast(Landing));

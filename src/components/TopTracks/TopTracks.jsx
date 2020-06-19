@@ -6,6 +6,7 @@ import TrackList from './TrackList';
 import Spinner from '../Layout/Spinner';
 import TrackOption from './TrackOption';
 import classes from './style/TopTracks.module.css';
+import AuthContext from '../../context/auth-context';
 
 class TopTracks extends Component {
 	constructor(){
@@ -15,9 +16,10 @@ class TopTracks extends Component {
 			term: "short_term",
 			loading: false,
 			tracklist: [],
-			isLoginRequired: false,
 		};
 	}
+	static contextType = AuthContext;
+
 	componentDidMount(){
 		// Starts fetching action when component is loaded
 		// Default for fetching is Short Term
@@ -57,8 +59,8 @@ class TopTracks extends Component {
 			});
 			// Triggers when access token is expired
 			if(error.response.status === 401){
-				this.setState({ isLoginRequired: true });
 				sessionStorage.clear();
+				this.context.updateAuth(false);
 			}
 		}
 	}
@@ -101,20 +103,13 @@ class TopTracks extends Component {
 			term: e.target.value,
 			loading: true
 		});
-		console.log(e.target.value);
 		this.fetchTracklist(e.target.value);
 	}
 	render() { 
-			var { term, tracklist, loading, isLoginRequired } = this.state;
-
-			if(loading && !isLoginRequired) return <Spinner />
-
-			// This will trigger when the access token is expired
-			const isRedirect = isLoginRequired ? this.props.history.push('/react-spotifly/login') : null;
-
+			var { term, tracklist, loading } = this.state;
+			if(loading) return <Spinner />
 			return (
 				<Fragment>
-					{isRedirect}
 					<div className={classes.TopTracks}>
 						<h1 className="text-center">Top Tracks</h1>
 						<div className={`form-group ${classes.TrackOption}`}>
