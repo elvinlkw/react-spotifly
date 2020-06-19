@@ -1,0 +1,53 @@
+.TrackControl {
+  display: flex;
+  flex-direction: row;
+}
+
+.TrackControl img{
+  width: 100%;
+  max-width: 30rem;
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 1);
+  margin-top: 2em;
+}
+
+.TrackControl div {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1rem;
+  margin-top: 7rem;
+}
+
+.TrackControl div p {
+  text-align: center;
+}
+
+.TrackControl div audio {
+  width: 80%;
+  margin: 0 auto;
+}
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 828px) {
+  .TrackOrder{
+    order: 1;
+  }
+
+  .TrackControl {
+    flex-direction: column;
+  }
+
+  .TrackControl div {
+    margin-top: 1rem;
+  }
+
+  .TrackControl div p:first-child {
+    margin-bottom: 0;
+  }
+
+  .TrackControl img{
+    width: 60%;
+    margin: 2em auto 0 auto;
+  }
+}

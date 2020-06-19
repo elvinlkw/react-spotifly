@@ -1,0 +1,14 @@
+.TopTracks {
+  overflow-x: hidden;
+}
+
+.TopTracks .TrackOption{
+  width: 10rem;
+  position: relative;
+  margin: 0 auto;
+}
+
+.TrackOption p {
+  text-align: center;
+  margin-bottom: 0;
+}

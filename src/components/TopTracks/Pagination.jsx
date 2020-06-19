@@ -1,34 +1,30 @@
-import React, { Component } from 'react';
+import React from 'react';
+import classes from './style/Pagination.module.css';
 
-class Pagination extends Component {
-  render(){
-    var { totalTracks, tracksPerPage, paginate } = this.props;
-    var pageNumber = [];
+const Pagination = ({ totalTracks, tracksPerPage, paginate }) => {
+  const pageNumber = [];
 
-    for(var i = 1; i <= Math.ceil(totalTracks / tracksPerPage); i++){
-      pageNumber.push(i);
-    }
-    
-    return (
-      <nav style={paginationStyle}>
-        <ul className="pagination">
-          {pageNumber.map(page => {
-            return (
-              <li key={page} className="page-item">
-                <a href="!#" onClick={(e) => paginate(e, page)} className="page-link">
-                  {page}
-                </a>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
-    )
+  // Calculate the amount of pages required for the tracklist array
+  // number of pages = total_tracks / number of tracks per page
+  for(var i = 1; i <= Math.ceil(totalTracks / tracksPerPage); i++){
+    pageNumber.push(i);
   }
-}
-
-const paginationStyle = {
-  margin: '15px'
+  
+  return (
+    <div className={classes.Pagination}>
+      <ul className="pagination">
+        {pageNumber.map(page => {
+          return (
+            <li key={page} className="page-item">
+              <a href="!#" onClick={(e) => paginate(e, page)} className="page-link">
+                {page}
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
 }
 
 export default Pagination;

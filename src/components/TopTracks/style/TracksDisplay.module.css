@@ -1,0 +1,13 @@
+.TracksDisplay li:hover {
+  cursor: pointer;
+  color: #F39C12;
+  font-weight: 500;
+}
+
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 828px) {
+  .TracksDisplay {
+    margin: 0 20px 2rem 1rem;
+  }
+}

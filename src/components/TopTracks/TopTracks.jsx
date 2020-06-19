@@ -1,122 +1,138 @@
-import React, { Component } from 'react';
-import SpotifyApi from 'spotify-web-api-js';
+import React, { Component, Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
+import axios from 'axios';
+import withToast from '../../hoc/withToast';
 import TrackList from './TrackList';
 import Spinner from '../Layout/Spinner';
-import '../../style/TopTracks.css';
-const spotifyApi = new SpotifyApi();
+import TrackOption from './TrackOption';
+import classes from './style/TopTracks.module.css';
 
 class TopTracks extends Component {
-    constructor(){
-        super();
-        let url = window.location.href;
-        this.state = {
-            term: "short_term",
-            loading: false,
-            tracklist: []
-        };
-        if(url.indexOf("token=") > -1){ 
-            this.token = url.split("token=")[1].split("&")[0].trim();
-        }
-        spotifyApi.setAccessToken(this.token);
-    }
-    getTrackInfo(i, trackObj, tempArray){
-        let tPromise = new Promise(function(resolve, reject) {
-            var obj = {};
-            var artist = '';
-            for (var j=0; j<trackObj.artists.length;j++){
-                if(artist.length > 1){
-                    artist += ', ' + trackObj.artists[j].name;
-                }else{
-                    artist += trackObj.artists[j].name;
-                }
-            }
-            obj['key'] = i;
-            obj['value'] = artist + ' - ' + trackObj.name;
-            obj['preview'] = trackObj.preview_url;
-            obj['image'] = trackObj.album.images[0].url;
-            if(trackObj.preview_url === null){
-                let reformatedURL = `${trackObj.album.href}?access_token=${this.token}`;
-                fetch(reformatedURL).then(res=>{
-                    return res.json();
-                }).then(data => {
-                    // console.log(data);
-                })
-            }
-            tempArray.push(obj);
-        }.bind(this));
-        return tPromise;
-    }
-    fetchTracklist(term){
-        var tempArray = [];
-        spotifyApi.getMyTopTracks({ limit: 50, time_range: term })
-            .then(res => {
-                var promiseArray = [];
-                for(let i = 0; i < res.items.length; i++){
-                    promiseArray.push(this.getTrackInfo(i, res.items[i], tempArray));
-                }
-                Promise.all(promiseArray);
-            })
-            .then(() => {
-                spotifyApi.getMyTopTracks({ limit: 50, time_range: term, offset: '49' })
-                    .then(res => {
-                        for(let i = 1; i < res.items.length; i++){
-                            var obj = {};
-                            var artist = '';
-                            for (let j = 0; j < res.items[i].artists.length; j++){
-                                if(artist.length > 1){
-                                    artist += ', ' + res.items[i].artists[j].name;
-                                }else{
-                                    artist += res.items[i].artists[j].name;
-                                }
-                            }
-                            obj['key'] = i+49;
-                            obj['value'] = artist + ' - ' + res.items[i].name;
-                            obj['preview'] = res.items[i].preview_url;
-                            obj['image'] = res.items[i].album.images[0].url;
-                            tempArray.push(obj);
-                        }
-                        this.setState({
-                            tracklist: tempArray,
-                            loading: false 
-                        });
-                    })
-                    .catch(err => console.log(err));
-            })
-            .catch(err => console.log(err));
-    }
-    componentWillMount(){
-        this.setState({ loading: true });
-        this.fetchTracklist('short_term');
-    }
-    handleOption(e){
-        this.setState({
-            term: e.target.value,
-            loading: true
-        });
-        this.fetchTracklist(e.target.value);
-    }
-    render() { 
-        var { term, tracklist, loading } = this.state;
+	constructor(){
+		super();
+		this.token = sessionStorage.getItem('token');
+		this.state = {
+			term: "short_term",
+			loading: false,
+			tracklist: [],
+			isLoginRequired: false,
+		};
+	}
+	componentDidMount(){
+		// Starts fetching action when component is loaded
+		// Default for fetching is Short Term
+		this.setState({ loading: true });
+		this.fetchTracklist('short_term');
+	}
+	fetchTracklist = async (term) => {
+		try {
+			let res = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+			params: {
+				time_range: term,
+				limit: 50
+			},
+			headers: { 'Authorization': `Bearer ${this.token}` }
+			});
+		
+			// Store tracklist, preview_url and artwork
+			let trackList = [];
+			trackList = await this.storeTrackList(res, trackList);
 
-        if(loading) return <Spinner />
+			res = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+			params: {
+				time_range: term,
+				limit: 50,
+				offset: 49
+			},
+			headers: { 'Authorization': `Bearer ${this.token}` }
+			}); 
 
-        return (
-            <div className="top-track-container">
-                <h1 className="text-center">Top Tracks</h1>
-                <div className="form-group">
-                    <p>View:</p>
-                    <select className="form-control" value={term} onChange={(e)=>this.handleOption(e)}>
-                        <option value="short_term">4 Weeks</option>
-                        <option value="medium_term">6 Months</option>
-                        <option value="long_term">All Time</option>
-                    </select>
-                </div>
-                <div className="top-tracks-wrapper row">
-                    <TrackList term={term} tracklist={tracklist}/>
-                </div>
-            </div>
-        );
-    }
+			trackList = await this.storeTrackList(res, trackList, 50)
+			this.setState({ tracklist: trackList, loading: false });
+
+		} catch (error) {
+			this.props.addToast(`${error.response.status}: ${error.response.data ? error.response.data.error.message : 'Error Encountered'}`, {
+				appearance: 'error',
+				autoDismiss: true
+			});
+			// Triggers when access token is expired
+			if(error.response.status === 401){
+				// this.setState({ isLoginRequired: true });
+				sessionStorage.clear();
+			}
+		}
+	}
+	storeTrackList = async (res, trackList, offset = 0) => {
+		let trackArray = trackList;
+		let preview_url = '';
+		const data = res.data.items;
+		for (let i = 0; i < data.length; i++){
+			// Gather list of artist in track
+			let artists = '';
+			for(let j = 0; j < data[i].artists.length; j++){
+				if(artists.length > 1){
+					artists += `, ${data[i].artists[j].name}`
+				} else {
+					artists += data[i].artists[j].name
+				}
+			}
+			// If Preview URL is null in initial fetch
+			// fetches deeper to get the preview
+			if(data[i].preview_url === null){
+				const res_track = await axios.get(data[i].href, {
+					headers: { 'Authorization': `Bearer ${this.token}` }
+				})
+				preview_url = res_track.data.preview_url;
+			} else {
+				preview_url = data[i].preview_url;
+			}
+			const store = {
+				key: i + offset,
+				name: `${artists} - ${data[i].name}`,
+				artwork: data[i].album.images[0].url,
+				preview: preview_url
+			}
+			trackArray.push(store);
+		}
+		return trackArray;
+	}
+	handleOption = async (e) => {
+		this.setState({
+			term: e.target.value,
+			loading: true
+		});
+		console.log(e.target.value);
+		this.fetchTracklist(e.target.value);
+	}
+	render() { 
+			var { term, tracklist, loading, isLoginRequired } = this.state;
+
+			if(loading && !isLoginRequired) return <Spinner />
+
+			// This will trigger when the access token is expired
+			const isRedirect = () => {
+				if(isLoginRequired) {
+					console.log('there')
+					this.props.history.push('/react-spotifly/login');
+				}
+			}
+
+			return (
+				<Fragment>
+					{isRedirect()}
+					<div className={classes.TopTracks}>
+						<h1 className="text-center">Top Tracks</h1>
+						<div className={`form-group ${classes.TrackOption}`}>
+							<p>View:</p>
+							<TrackOption term={term} onchange={(this.handleOption)} />
+						</div>
+						<div className="row">
+							<TrackList term={term} tracklist={tracklist}/>
+						</div>
+					</div>
+				</Fragment>
+			);
+	}
 }
 
-export default TopTracks;
+export default withRouter(withToast(TopTracks));
