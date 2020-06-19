@@ -1,4 +1,19 @@
+# Spotify Data Analyzer
+
+### Quick Introduction
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React application that makes use of the Spotify Web API to display, analyze and recommend music from your listening data.
+
+### Dependencies Used
+* axios
+* chart-js
+* react-router-4
+* react-toast-notifications
+* Bootstrap 4
+
+### Hosting
+This project is currently available and is hosted at https://elvinlkw.github.io/react-spotifly
 
 ## Available Scripts
 
