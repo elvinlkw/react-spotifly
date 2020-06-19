@@ -11,10 +11,6 @@ import axios from 'axios';
 class Search2 extends Component {
   constructor(props){
     super(props);
-    // let url = window.location.href;
-    // if(url.indexOf("token=") > -1){ 
-    //     this.token = url.split("token=")[1].split("&")[0].trim();
-    // }
     this.token = sessionStorage.getItem('token');
     this.state = {
       loading: false,
@@ -32,6 +28,7 @@ class Search2 extends Component {
       albumTracklist: {},
       displayModal: false,
       searchCompleted: false,
+      isLoginRequired: false,
       inputFilter:{
         limit: 50,
         album: true,
@@ -64,12 +61,13 @@ class Search2 extends Component {
     let albumList = [];
     let trackList = [];
     const data = res.data;
+    // If Search Filter includes Album
     if(inputFilter.album){
       // Storing Albums
       for(let i = 0; i < data.albums.items.length; i++){
         let albumData = data.albums.items[i];
         // Check if album type is 'album'
-        if(albumData.album_type === 'album'){
+        if(albumData.total_tracks > 1){
           let store = {
             name: albumData.name,
             artwork: albumData.images[1].url,
@@ -124,6 +122,10 @@ class Search2 extends Component {
         autoDismiss: true
       });
       this.setState({ loading: false });
+      if(error.response.status === 401){
+				this.setState({ isLoginRequired: true });
+				sessionStorage.clear();
+			}
     }
   }
   // function that sort list according to Select option
@@ -173,6 +175,10 @@ class Search2 extends Component {
         appearance: 'error',
         autoDismiss: true
       });
+      if(error.response.status === 401){
+				this.setState({ isLoginRequired: true });
+				sessionStorage.clear();
+			}
     }
   }
   fetchTracklist = async (index) => {
@@ -194,7 +200,6 @@ class Search2 extends Component {
         }
         tracklist.push(store);
       }
-      console.log(res.data);
       const albumTracklist = {
         tracklist,
         duration_s: duration_ms / 1000,
@@ -215,6 +220,10 @@ class Search2 extends Component {
         appearance: 'error',
         autoDismiss: true
       });
+      if(error.response.status === 401){
+				this.setState({ isLoginRequired: true });
+				sessionStorage.clear();
+			}
     }
   }
   handleAlbumClick = (index) => {
@@ -289,7 +298,8 @@ class Search2 extends Component {
       audio_src, 
       modalLoading, 
       selected_option, 
-      inputFilter
+      inputFilter,
+      isLoginRequired
     } = this.state;
     
     // Displays loading icon when fetching tracks and albums
@@ -319,8 +329,14 @@ class Search2 extends Component {
         )
       }
     }
+    const isRedirect = () => {
+      if(isLoginRequired) {
+        this.props.history.push('/react-spotifly/login');
+      }
+    }
     return (
       <div>
+        {isRedirect()}
         <audio alt="No Tracks Found" src={audio_src} autoPlay></audio>
         <Modal displayModal={displayModal} hideModal={this.handleCloseModal}>
           {this.state.searchCompleted && <AlbumTracklist loading={modalLoading} albumTracklist={albumTracklist} isPlaying={this.handlePlayingStatus} displayModal={displayModal}/>}

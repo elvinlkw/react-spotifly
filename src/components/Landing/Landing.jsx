@@ -96,6 +96,10 @@ class Landing extends Component {
         appearance: 'error',
         autoDismiss: true
       });
+      if(error.response.status === 401){
+				this.setState({ isLoginRequired: true });
+				sessionStorage.clear();
+			}
     }
   }
   componentWillUnmount(){
@@ -167,13 +171,17 @@ class Landing extends Component {
       top_artist,
       player_1,
       player_2,
-      favorite_genres
+      favorite_genres,
+      isLoginRequired
     } = this.state;
 
     if( loading ) return <Spinner />
+
+    const isRedirect = isLoginRequired ? this.props.history.push('/react-spotifly/login') : null;
     
     return (
       <div className="container">
+        {isRedirect}
         <TopTrack top_track={top_track} onclick={this.handleClick} icon={player_1}/>
         <TopArtist top_artist={top_artist} onclick={this.handleClick} icon={player_2}/>
         <Chart genres={favorite_genres} />

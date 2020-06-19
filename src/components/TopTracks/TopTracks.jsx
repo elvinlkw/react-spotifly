@@ -57,7 +57,7 @@ class TopTracks extends Component {
 			});
 			// Triggers when access token is expired
 			if(error.response.status === 401){
-				// this.setState({ isLoginRequired: true });
+				this.setState({ isLoginRequired: true });
 				sessionStorage.clear();
 			}
 		}
@@ -110,16 +110,11 @@ class TopTracks extends Component {
 			if(loading && !isLoginRequired) return <Spinner />
 
 			// This will trigger when the access token is expired
-			const isRedirect = () => {
-				if(isLoginRequired) {
-					console.log('there')
-					this.props.history.push('/react-spotifly/login');
-				}
-			}
+			const isRedirect = isLoginRequired ? this.props.history.push('/react-spotifly/login') : null;
 
 			return (
 				<Fragment>
-					{isRedirect()}
+					{isRedirect}
 					<div className={classes.TopTracks}>
 						<h1 className="text-center">Top Tracks</h1>
 						<div className={`form-group ${classes.TrackOption}`}>
