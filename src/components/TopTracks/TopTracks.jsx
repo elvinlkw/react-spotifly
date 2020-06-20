@@ -51,7 +51,7 @@ class TopTracks extends Component {
 
 			trackList = await this.storeTrackList(res, trackList, 50)
 			this.setState({ tracklist: trackList, loading: false });
-
+			
 		} catch (error) {
 			this.props.addToast(`${error.response.status}: ${error.response.data ? error.response.data.error.message : 'Error Encountered'}`, {
 				appearance: 'error',
@@ -92,7 +92,8 @@ class TopTracks extends Component {
 				key: i + offset,
 				name: `${artists} - ${data[i].name}`,
 				artwork: data[i].album.images[0].url,
-				preview: preview_url
+				preview: preview_url,
+				uri: data[i].uri
 			}
 			trackArray.push(store);
 		}

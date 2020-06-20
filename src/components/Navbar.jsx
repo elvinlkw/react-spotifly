@@ -39,9 +39,9 @@ const Navbar = ({ history }) => {
 				<li className="nav-item">
 					<NavLink exact to={`/react-spotifly/top-tracks`} className="nav-link">Top Tracks</NavLink>
 				</li>
-				{/* <li className="nav-item">
-					<NavLink exact to={`/react-spotifly/top-artists#access_token=${token}&token_type=Bearer&expires_in=3600`} className="nav-link">Top Artists</NavLink>
-				</li> */}
+				<li className="nav-item">
+					<NavLink exact to={`/react-spotifly/top-artists`} className="nav-link">Top Artists</NavLink>
+				</li>
 				<li className="nav-item">
 					<a href="!#" onClick={handleLogOut} className="nav-link">Log Out</a>
 				</li>

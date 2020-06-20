@@ -10,7 +10,7 @@ import Modal from './Modal';
 import axios from 'axios';
 
 
-class Search2 extends Component {
+class Search extends Component {
   constructor(props){
     super(props);
     this.token = sessionStorage.getItem('token');
@@ -344,4 +344,4 @@ class Search2 extends Component {
   }
 }
 
-export default withToast(Search2);
+export default withToast(Search);

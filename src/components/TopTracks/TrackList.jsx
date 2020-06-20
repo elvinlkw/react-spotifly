@@ -16,7 +16,8 @@ class TrackList extends Component {
 			},
 			songFocus: false,
 			currentPage: 1,
-			tracksPerPage: 20
+			tracksPerPage: 20,
+			activeClass: false
 		}
 	}
 	// Handler for clicking of a track
@@ -25,7 +26,8 @@ class TrackList extends Component {
 		var track = {
 			name: song,
 			preview: tracklist[key].preview,
-			image_src: tracklist[key].artwork
+			image_src: tracklist[key].artwork,
+			uri: tracklist[key].uri
 		}
 		if(track.preview === null){
 			this.props.addToast(`No Previews Found`, {
@@ -35,7 +37,8 @@ class TrackList extends Component {
 		} else {
 			this.setState({ 
 				songFocus: true,
-				currentTrack: track
+				currentTrack: track,
+				activeClass: true
 			});
 		}
 	}
@@ -45,22 +48,23 @@ class TrackList extends Component {
 		this.setState({ currentPage: number });
 	}
 	render() { 
-		var { 
+		const { 
 				songFocus,
 				currentPage,
 				tracksPerPage,
-				currentTrack
+				currentTrack,
+				activeClass
 		} = this.state;
-		var { term, tracklist } = this.props;
+		const { term, tracklist } = this.props;
 
 		// Display period of the fetch
 		var termHeader = term.substring(0, term.indexOf('_'));
 
 		// Retrieving Pagination Indexes
 		// get the list of tracks in focus
-		var indexOfLastPage = currentPage * tracksPerPage;
-		var indexOfFirstPage = indexOfLastPage - tracksPerPage;
-		var currentTracks = tracklist.slice(indexOfFirstPage, indexOfLastPage);
+		let indexOfLastPage = currentPage * tracksPerPage;
+		let indexOfFirstPage = indexOfLastPage - tracksPerPage;
+		let currentTracks = tracklist.slice(indexOfFirstPage, indexOfLastPage);
 		
 		return (
 			<React.Fragment>
@@ -79,7 +83,8 @@ class TrackList extends Component {
 				</div>
 				<TrackControl 
 					songFocus={songFocus}
-					currentTrack={currentTrack} />
+					currentTrack={currentTrack}
+					activeClass={activeClass} />
 			</React.Fragment>
 		);
 	}

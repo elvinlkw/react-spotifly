@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import SpotifyApi from 'spotify-web-api-js';
+const spotifyApi = new SpotifyApi();
 
 export class ArtistList extends Component {
     constructor(props){
@@ -7,9 +9,11 @@ export class ArtistList extends Component {
             itemList: [],
             dataValid: false
         }
+        this.token = sessionStorage.getItem('token');
+        spotifyApi.setAccessToken(this.token);
     }
     componentDidMount(){
-        var { spotifyApi, term } = this.props;
+        const { term } = this.props;
         var tempArray = [];
         spotifyApi.getMyTopArtists({limit: 50, time_range: term}).then((res)=>{
             for(var i = 0; i < res.items.length; i++){

@@ -12,6 +12,7 @@ class Landing extends Component {
   constructor(props){
     super(props);
     this.token = sessionStorage.getItem('token');
+    console.log(this.token);
     this.state = {
       loading: true,
       isPlaying: true,
@@ -166,7 +167,34 @@ class Landing extends Component {
       }));
     }
   }
+  // playTopTrack = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const res = await axios({
+  //       method: 'GET',
+  //       url: 'https://api.spotify.com/v1/me/player/devices',
+  //       headers: { 'Authorization': `Bearer ${this.token}` }
+  //     });
 
+  //     console.log(res);
+  //     const device_id = res.data.devices[0].id;
+  //     console.log(device_id);
+
+  //     await axios({
+  //       method: 'PUT',
+  //       url: 'https://api.spotify.com/v1/me/player/play',
+  //       params: { 'device_id' : device_id },
+  //       data: { 'uris' : [this.state.top_track.uri] },
+  //       headers: { 'Authorization': `Bearer ${this.token}` }
+  //     });
+  //   } catch (error) {
+  //     console.log(error.response);
+  //     this.props.addToast(`${error.response.status}: ${error.response.data ? error.response.data.error.message : 'Error Encountered'}`, {
+  //       appearance: 'error',
+  //       autoDismiss: true
+  //     });
+  //   }
+  // }
   render() {
     const {
       loading,
@@ -182,6 +210,7 @@ class Landing extends Component {
     return (
       <div className="container">
         <TopTrack top_track={top_track} onclick={this.handleClick} icon={player_1}/>
+        {/* <button className="btn btn-success" onClick={this.playTopTrack}>Play</button> */}
         <TopArtist top_artist={top_artist} onclick={this.handleClick} icon={player_2}/>
         <Chart genres={favorite_genres} />
       </div>
