@@ -1,0 +1,14 @@
+.ArtistList {
+  margin-left: 5%;
+}
+
+.ArtistList p {
+  font-weight: bold;
+  margin-top: 1rem;
+  text-transform: capitalize;
+}
+
+.ArtistList ol li {
+  width: fit-content;
+  cursor: pointer;
+}

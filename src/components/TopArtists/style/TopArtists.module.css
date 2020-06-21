@@ -1,0 +1,10 @@
+.SelectedOption{
+  width: 10rem;
+  position: relative;
+  margin: 0 auto;
+}
+
+.SelectedOption p {
+  text-align: center;
+  margin-bottom: 0;
+}
