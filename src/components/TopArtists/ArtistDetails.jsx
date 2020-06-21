@@ -4,10 +4,10 @@ import Spinner from '../Layout/Spinner';
 import withToast from '../../hoc/withToast';
 import classes from './style/ArtistDetails.module.css';
 
-const ArtistDetails = ({ loading, myArtist: { artist, my_ArtistTracks }, addToast}) => {
+const ArtistDetails = ({ loading, myArtist: { artist, my_ArtistTracks, artistTopTracks }, addToast}) => {
   const [ preview, setPreview ] = useState('');
 
-  const handlePlaySong = async (e, index) => {
+  const handlePlaySong = async (e, index, type) => {
     e.preventDefault();
     try {
       const token = sessionStorage.getItem('token');
@@ -20,17 +20,17 @@ const ArtistDetails = ({ loading, myArtist: { artist, my_ArtistTracks }, addToas
       if(res.data.devices.length > 0){
         device_id = res.data.devices[0].id;
       } else {
-        await window.open(my_ArtistTracks[index].uri, '_self');
+        window.open(type[index].uri, '_self');
       }
       await axios({
         method: 'PUT',
         url: 'https://api.spotify.com/v1/me/player/play',
         params: { 'device_id' : device_id },
-        data: { 'uris': [my_ArtistTracks[index].uri] },
+        data: { 'uris': [type[index].uri] },
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      addToast(`${my_ArtistTracks[index].name} playing in Spotify client`, {
+      addToast(`${type[index].name} playing in Spotify client`, {
         appearance: 'success',
         autoDismiss: true
       });
@@ -64,14 +64,24 @@ const ArtistDetails = ({ loading, myArtist: { artist, my_ArtistTracks }, addToas
             return (
               <div key={`my_artist_${index}`} className={classes.MyArtistList}>
                 <li onClick={() => setPreview(track.preview_url)}>{track.name}</li>
-                <button className="btn btn-success" onClick={(e) => handlePlaySong(e, index)}>Spotify</button>
+                <button className="btn btn-success" onClick={(e) => handlePlaySong(e, index, my_ArtistTracks)}>Spotify</button>
               </div>
             )
           })}
         </ol>
       </div>
       <div className="col-md-4">
-        Top Tracks
+        <h4>Top Tracks</h4>
+        <ol>
+          {artistTopTracks.map((track, index) => {
+            return (
+              <div key={`my_artist_${index}`} className={classes.MyArtistList}>
+                <li onClick={() => setPreview(track.preview_url)}>{track.name}</li>
+                <button className="btn btn-success" onClick={(e) => handlePlaySong(e, index, artistTopTracks)}>Spotify</button>
+              </div>
+            )
+          })}
+        </ol>
       </div>
     </div>
   )

@@ -105,6 +105,7 @@ class TopArtists extends Component {
 			});
 
 			let artistTracks = [];
+			let artistTopTracks = [];
 			artistTracks = this.storeMyArtistTracks(res, artistTracks, clickedArtist);
 
 			res = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
@@ -116,17 +117,26 @@ class TopArtists extends Component {
 				headers: { 'Authorization': `Bearer ${this.token}` }
 			});
 			artistTracks = this.storeMyArtistTracks(res, artistTracks, clickedArtist);
-
+			artistTopTracks = await this.fetchArtistTopTracks(clickedArtist);
 			this.setState({
 				modalLoading: false,
 				myArtistDetails: {
 					artist: clickedArtist,
-					my_ArtistTracks: artistTracks
+					my_ArtistTracks: artistTracks,
+					artistTopTracks
 				},
 				searchCompleted: true
 			});
     } catch (error) {
-      alert(error);
+      this.props.addToast(`${error.response.status}: ${error.response.data ? error.response.data.error.message : 'Error Encountered'}`, {
+				appearance: 'error',
+				autoDismiss: true
+			});
+			// Triggers when access token is expired
+			if(error.response.status === 401){
+				sessionStorage.clear();
+				this.context.updateAuth(false);
+			}
     }
 	}
 	storeMyArtistTracks = (res, artistTracks, clickedArtist, offset = 0) => {
@@ -146,7 +156,35 @@ class TopArtists extends Component {
 		}
 		return artistArray;
 	}
-	handleShowModal = (clickedArtist) => {
+	fetchArtistTopTracks = async (artist) => {
+		try {
+			const res = await axios({
+				method: 'GET',
+				url: `https://api.spotify.com/v1/artists/${artist.id}/top-tracks`,
+				params: { country : 'US' },
+				headers: { 'Authorization': `Bearer ${this.token}` }
+			});
+			let artistTracks = [];
+			artistTracks = this.storeArtistTopTracks(res, artistTracks);
+			return artistTracks;
+		} catch (error) {
+			
+		}
+	}
+	storeArtistTopTracks(res, artistTracks, offset = 0){
+		let artistArray = artistTracks;
+		const data = res.data.tracks;
+		for(let i = 0; i < data.length; i++){
+			const store = {
+				name: data[i].name,
+				preview_url: data[i].preview_url,
+				uri: data[i].uri
+			}
+			artistArray.push(store);
+		}
+		return artistArray;
+	}
+	handleShowModal = async (clickedArtist) => {
 		this.setState({ 
 			showModal: true,
 			modalLoading: true
