@@ -16,21 +16,22 @@ const ArtistDetails = ({ loading, myArtist: { artist, my_ArtistTracks, artistTop
         url: 'https://api.spotify.com/v1/me/player/devices',
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      let device_id = '';
+      let device = {};
       if(res.data.devices.length > 0){
-        device_id = res.data.devices[0].id;
+        device.id = res.data.devices[0].id;
+        device.name = res.data.devices[0].name;
       } else {
         window.open(type[index].uri, '_self');
       }
       await axios({
         method: 'PUT',
         url: 'https://api.spotify.com/v1/me/player/play',
-        params: { 'device_id' : device_id },
+        params: { 'device_id' : device.id },
         data: { 'uris': [type[index].uri] },
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      addToast(`${type[index].name} playing in Spotify client`, {
+      addToast(`${type[index].name} playing in ${device.name}`, {
         appearance: 'success',
         autoDismiss: true
       });

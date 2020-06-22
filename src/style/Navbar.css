@@ -9,3 +9,15 @@
 .navbar-toggler-icon{
     opacity: 0.5;
 }
+
+@media only screen
+and (min-device-width: 360px)
+and (max-device-width: 828px) {
+    .navbar .nav-link {
+        font-size: 0.9rem;
+    }
+
+    .navbar button{
+        width: auto;
+    }
+}

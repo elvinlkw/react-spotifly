@@ -3,7 +3,7 @@
 }
 
 @media only screen
-and (min-device-width: 375px)
+and (min-device-width: 360px)
 and (max-device-width: 828px) {
   .Pagination {
     margin: 0 0 0 50px;
