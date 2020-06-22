@@ -19,6 +19,7 @@
 }
 
 .AlbumTracklist li{
+  width: fit-content;
   cursor: pointer;
 }
 
@@ -32,12 +33,8 @@
 }
 
 @media only screen
-and (min-device-width: 375px)
+and (min-device-width: 360px)
 and (max-device-width: 828px) {
-  .AlbumTracklist .description {
-    display: none;
-  }
-
   .AlbumTracklist .TrackListContainer {
     padding: 0;
   }
@@ -49,6 +46,27 @@ and (max-device-width: 828px) {
 
   .AlbumTracklist h2{
     text-align: center;
+  }
+
+  .TrackListContainer h2{
+    display: none;
+  }
+
+  .description audio {
+    margin: 0;
+  }
+
+  .description p {
+    display: none;
+  }
+
+  .description h3 {
+    font-size: 1.5rem;
+  }
+
+  .description form {
+    display: flex;
+    justify-content: center;
   }
 
   .TrackListContainer li {

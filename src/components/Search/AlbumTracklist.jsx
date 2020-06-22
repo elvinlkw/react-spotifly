@@ -109,9 +109,11 @@ const AlbumTracklist = ({ albumTracklist: { tracklist, duration_s, release_date,
             </form>
           </div>
           <hr/>
-          <p>By {artist}</p>
-          <p>{release_date}</p>
-          <p>{tracklist.length} Songs - {displayDuration()}</p>
+          <div className={classes.SearchMobile}>
+            <p>By {artist}</p>
+            <p>{release_date}</p>
+            <p>{tracklist.length} Songs - {displayDuration()}</p>
+          </div>  
           <audio controls autoPlay src={preview} className="player-album"></audio>
           {displayNowPlaying()}
         </div>
