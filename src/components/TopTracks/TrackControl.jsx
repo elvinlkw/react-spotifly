@@ -13,26 +13,27 @@ const TrackControl = ({songFocus, currentTrack: { name, preview, image_src, uri 
         url: 'https://api.spotify.com/v1/me/player/devices',
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      let device_id = '';
+      let device = {};
       if(res.data.devices.length > 0){
-        device_id = res.data.devices[0].id;
-      } else {
-        await window.open(uri, '_self');
-      }
-      document.querySelector('audio').pause();
-      document.querySelector('audio').autoplay = false;
-      await axios({
-        method: 'PUT',
-        url: 'https://api.spotify.com/v1/me/player/play',
-        params: { 'device_id' : device_id },
-        data: { 'uris': [uri] },
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+        device.id = res.data.devices[0].id;
+        device.name = res.data.devices[0].name;
 
-      addToast(`${name} playing in Spotify client`, {
-        appearance: 'success',
-        autoDismiss: true
-      });
+        document.querySelector('audio').pause();
+        document.querySelector('audio').autoplay = false;
+        await axios({
+          method: 'PUT',
+          url: 'https://api.spotify.com/v1/me/player/play',
+          params: { 'device_id' : device.id },
+          data: { 'uris': [uri] },
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        addToast(`${name} playing in ${device.name}`, {
+          appearance: 'success',
+          autoDismiss: true
+        });
+      } else {
+        window.open(uri, '_self');
+      }
     } catch (error) {
       addToast(`${error.response.status}: ${error.response.data ? error.response.data.error.message : 'Error Encountered'}`, {
         appearance: 'error',

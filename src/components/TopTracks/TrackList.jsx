@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Pagination from './Pagination';
+import Pagination from '../Layout/Pagination';
 import TracksDisplay from './TracksDisplay';
 import TrackControl from './TrackControl';
 import withToast from '../../hoc/withToast';
