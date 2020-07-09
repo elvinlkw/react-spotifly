@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Spinner from '../Layout/Spinner';
 import withToast from '../../hoc/withToast';
 import classes from './style/ArtistDetails.module.css';
 
-const ArtistDetails = ({ loading, myArtist: { artist, my_ArtistTracks, artistTopTracks }, addToast}) => {
+const ArtistDetails = ({ loading, myArtist: { artist, my_ArtistTracks, artistTopTracks }, addToast, displayModal}) => {
   const [ preview, setPreview ] = useState('');
+
+  // Stops currently playing track
+  useEffect(() => {
+    setPreview('');
+  }, [displayModal]);
 
   const handlePlaySong = async (e, index, type) => {
     e.preventDefault();

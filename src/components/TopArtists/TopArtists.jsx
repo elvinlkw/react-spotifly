@@ -208,7 +208,7 @@ class TopArtists extends Component {
 		return (
 			<div className={classes.TopArtists}>
 				<Modal displayModal={showModal} hideModal={this.handleHideModal}>
-					{searchCompleted && <ArtistDetails loading={modalLoading} myArtist={myArtistDetails}/>}
+					{searchCompleted && <ArtistDetails loading={modalLoading} myArtist={myArtistDetails} displayModal={showModal}/>}
 				</Modal>
 				<h1 className="text-center">Top Artists</h1>
 				<div className={`form-group ${classes.SelectedOption}`}>
