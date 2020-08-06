@@ -1,24 +1,24 @@
 {
   "files": {
     "main.css": "/react-spotifly/static/css/main.4be8bb57.chunk.css",
-    "main.js": "/react-spotifly/static/js/main.f97b7534.chunk.js",
-    "main.js.map": "/react-spotifly/static/js/main.f97b7534.chunk.js.map",
+    "main.js": "/react-spotifly/static/js/main.43d21414.chunk.js",
+    "main.js.map": "/react-spotifly/static/js/main.43d21414.chunk.js.map",
     "runtime-main.js": "/react-spotifly/static/js/runtime-main.d6dc61aa.js",
     "runtime-main.js.map": "/react-spotifly/static/js/runtime-main.d6dc61aa.js.map",
-    "static/js/2.53c7f4f7.chunk.js": "/react-spotifly/static/js/2.53c7f4f7.chunk.js",
-    "static/js/2.53c7f4f7.chunk.js.map": "/react-spotifly/static/js/2.53c7f4f7.chunk.js.map",
+    "static/js/2.0539772c.chunk.js": "/react-spotifly/static/js/2.0539772c.chunk.js",
+    "static/js/2.0539772c.chunk.js.map": "/react-spotifly/static/js/2.0539772c.chunk.js.map",
     "index.html": "/react-spotifly/index.html",
-    "precache-manifest.f4f7e969a349b2a9b666e24d0b4c07e6.js": "/react-spotifly/precache-manifest.f4f7e969a349b2a9b666e24d0b4c07e6.js",
+    "precache-manifest.f4407a19d6e54196d0773da3d57ec1f4.js": "/react-spotifly/precache-manifest.f4407a19d6e54196d0773da3d57ec1f4.js",
     "service-worker.js": "/react-spotifly/service-worker.js",
     "static/css/main.4be8bb57.chunk.css.map": "/react-spotifly/static/css/main.4be8bb57.chunk.css.map",
-    "static/js/2.53c7f4f7.chunk.js.LICENSE.txt": "/react-spotifly/static/js/2.53c7f4f7.chunk.js.LICENSE.txt",
+    "static/js/2.0539772c.chunk.js.LICENSE.txt": "/react-spotifly/static/js/2.0539772c.chunk.js.LICENSE.txt",
     "static/media/react-logo.png": "/react-spotifly/static/media/react-logo.580ffd26.png",
     "static/media/spinner.gif": "/react-spotifly/static/media/spinner.2f27f045.gif"
   },
   "entrypoints": [
     "static/js/runtime-main.d6dc61aa.js",
-    "static/js/2.53c7f4f7.chunk.js",
+    "static/js/2.0539772c.chunk.js",
     "static/css/main.4be8bb57.chunk.css",
-    "static/js/main.f97b7534.chunk.js"
+    "static/js/main.43d21414.chunk.js"
   ]
 }

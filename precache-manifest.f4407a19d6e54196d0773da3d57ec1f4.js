@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c43414bc5847b839f2f9c0efe3896dca",
+    "revision": "ecf6c60c26e0abb4a4f965efee8c4f6d",
     "url": "/react-spotifly/index.html"
   },
   {
-    "revision": "e9e3d984da8daf544b60",
+    "revision": "2d87fabe25730e75b31c",
     "url": "/react-spotifly/static/css/main.4be8bb57.chunk.css"
   },
   {
-    "revision": "d2e62d421b3625420f0b",
-    "url": "/react-spotifly/static/js/2.53c7f4f7.chunk.js"
+    "revision": "8b5dbdfc7e86e1d6efaa",
+    "url": "/react-spotifly/static/js/2.0539772c.chunk.js"
   },
   {
     "revision": "b4cabae32341920cfb4131dbdebda2c2",
-    "url": "/react-spotifly/static/js/2.53c7f4f7.chunk.js.LICENSE.txt"
+    "url": "/react-spotifly/static/js/2.0539772c.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "e9e3d984da8daf544b60",
-    "url": "/react-spotifly/static/js/main.f97b7534.chunk.js"
+    "revision": "2d87fabe25730e75b31c",
+    "url": "/react-spotifly/static/js/main.43d21414.chunk.js"
   },
   {
     "revision": "49280901331152da44bd",
