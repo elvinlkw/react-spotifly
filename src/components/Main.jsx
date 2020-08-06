@@ -9,11 +9,12 @@ import TopArtists from './TopArtists/TopArtists';
 const Main = () => {
     return (
         <Switch>
-            <Route exact path="/react-spotifly" component={Landing} />}/>
-            <Route exact path="/react-spotifly/profile" component={Profile}></Route>
-            <Route exact path="/react-spotifly/search" component={Search}></Route>
-            <Route exact path="/react-spotifly/top-tracks" component={TopTracks}></Route>
-            <Route exact path="/react-spotifly/top-artists" component={TopArtists}></Route>
+            <Route exact path="/" component={Landing} />}/>
+            <Route path="/profile" component={Profile}></Route>
+            <Route path="/search" component={Search}></Route>
+            <Route path="/top-tracks" component={TopTracks}></Route>
+            <Route path="/top-artists" component={TopArtists}></Route>
+            <Route path="/access_token*" component={Landing}></Route>
         </Switch>
     );
 }
