@@ -90,8 +90,8 @@ class TopTracks extends Component {
 			}
 			const store = {
 				key: i + offset,
-				name: `${artists} - ${data[i].name}`,
-				artwork: data[i].album.images[0].url,
+				name: (artists === '' && data[i].name === '') ? 'Not Available' : `${artists} - ${data[i].name}`,
+				artwork: data[i].album.images[0] ? data[i].album.images[0].url : '',
 				preview: preview_url,
 				uri: data[i].uri
 			}
