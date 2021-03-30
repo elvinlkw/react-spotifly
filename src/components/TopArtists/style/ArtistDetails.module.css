@@ -28,6 +28,13 @@
   color: red;
 }
 
+.MyArtistList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .MyArtistList button {
   display: none;
   width: 4rem;
