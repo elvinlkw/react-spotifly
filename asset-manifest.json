@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/react-spotifly/static/css/main.66d60502.css",
-    "main.js": "/react-spotifly/static/js/main.3fc979fb.js",
+    "main.js": "/react-spotifly/static/js/main.2a308866.js",
     "static/media/react-logo.png": "/react-spotifly/static/media/react-logo.93a4bdf112404308934d.png",
     "static/media/spinner.gif": "/react-spotifly/static/media/spinner.345fe17021997f88451a.gif",
     "index.html": "/react-spotifly/index.html",
     "main.66d60502.css.map": "/react-spotifly/static/css/main.66d60502.css.map",
-    "main.3fc979fb.js.map": "/react-spotifly/static/js/main.3fc979fb.js.map"
+    "main.2a308866.js.map": "/react-spotifly/static/js/main.2a308866.js.map"
   },
   "entrypoints": [
     "static/css/main.66d60502.css",
-    "static/js/main.3fc979fb.js"
+    "static/js/main.2a308866.js"
   ]
 }
