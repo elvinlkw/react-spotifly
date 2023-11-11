@@ -4,7 +4,7 @@
   "homepage": "https://elvinlkw.github.io/react-spotifly",
   "private": true,
   "dependencies": {
-    "axios": "^1.5.1",
+    "axios": "^1.6.0",
     "chart.js": "^3.9.1",
     "dotenv": "^16.3.1",
     "font-awesome": "^4.7.0",
